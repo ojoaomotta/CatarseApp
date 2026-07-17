@@ -39,7 +39,7 @@ jobs:
         run: npm ci # Usa npm ci para instalar exatamente o que está no package-lock.json
 
       - name: Build and Package Tauri App
-        uses: tauri-apps/tauri-action@v2
+        uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
