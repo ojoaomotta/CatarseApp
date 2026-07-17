@@ -1,0 +1,146 @@
+/* Floating Monitor Styling for Base44 / Lovable Pages */
+#base44-credit-monitor {
+  position: fixed;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #f3f4f6;
+  background: rgba(15, 15, 20, 0.85);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Position overrides (can be adjusted by tryDockToInput script) */
+#base44-credit-monitor {
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Collapsed State */
+.base44-monitor-collapsed {
+  width: 180px;
+  height: 40px;
+}
+
+.base44-monitor-collapsed .monitor-body {
+  display: none !important;
+}
+
+/* Expanded State */
+.base44-monitor-expanded {
+  width: 240px;
+  height: 175px;
+}
+
+/* Header */
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.monitor-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.monitor-controls button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 2px;
+  transition: color 0.2s;
+}
+
+.monitor-controls button:hover {
+  color: #f3f4f6;
+}
+
+/* Body */
+.monitor-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 135px;
+  box-sizing: border-box;
+}
+
+.monitor-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  color: #9ca3af;
+}
+
+.monitor-stat-row strong {
+  color: #f3f4f6;
+  font-weight: 600;
+}
+
+/* Progress Bar */
+.monitor-progress-bg {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#monitor-progress-fill {
+  height: 100%;
+  background: #8b5cf6;
+  border-radius: 3px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.prompt-token-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 8px;
+}
+
+/* Actions Row */
+.monitor-action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.monitor-btn-action {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f3f4f6;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.monitor-btn-action:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.monitor-btn-action:active {
+  transform: scale(0.97);
+}

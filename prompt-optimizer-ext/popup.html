@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Prompt Optimizer & Credit Monitor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="logo">
+        <span class="gradient-text">Prompt</span>Optimizer
+      </h1>
+      <span class="version">v1.0</span>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="tab-optimizer">Otimizar</button>
+      <button class="tab-btn" data-tab="tab-templates">Modelos</button>
+      <button class="tab-btn" data-tab="tab-history">Histórico</button>
+    </nav>
+
+    <!-- Tab Contents -->
+    <main class="tab-content-container">
+      
+      <!-- Tab 1: Optimizer -->
+      <section id="tab-optimizer" class="tab-pane active">
+        <div class="input-group">
+          <textarea id="prompt-input" placeholder="Escreva ou cole seu prompt aqui..."></textarea>
+          <div class="textarea-footer">
+            <span id="char-counter">0 chars</span>
+            <span id="token-counter">~0 tokens</span>
+          </div>
+        </div>
+
+        <div class="actions-grid">
+          <button id="btn-minify" class="btn btn-secondary" title="Remove espaços extras, quebras de linhas redundantes e minifica o texto">
+            Minificar
+          </button>
+          <button id="btn-save" class="btn btn-secondary">
+            Salvar Rascunho
+          </button>
+          <button id="btn-copy" class="btn btn-primary">
+            Copiar Otimizado
+          </button>
+        </div>
+      </section>
+
+      <!-- Tab 2: Templates -->
+      <section id="tab-templates" class="tab-pane">
+        <p class="section-desc">Escolha um modelo estruturado para evitar gasto duplo de créditos:</p>
+        <div class="templates-list">
+          <button class="template-card" data-template="feature">
+            <h4>✨ Nova Funcionalidade</h4>
+            <p>Define escopo, comportamento esperado e limitações.</p>
+          </button>
+          <button class="template-card" data-template="bug">
+            <h4>🐛 Correção de Bug</h4>
+            <p>Passo a passo, erro observado e comportamento esperado.</p>
+          </button>
+          <button class="template-card" data-template="refactor">
+            <h4>♻️ Refatoração de Código</h4>
+            <p>Melhoria de legibilidade, desempenho e boas práticas.</p>
+          </button>
+        </div>
+      </section>
+
+      <!-- Tab 3: History -->
+      <section id="tab-history" class="tab-pane">
+        <div class="history-header">
+          <p class="section-desc">Seus rascunhos salvos localmente:</p>
+          <button id="btn-clear-history" class="btn-clear">Limpar Tudo</button>
+        </div>
+        <div id="history-list" class="history-list">
+          <p class="empty-state">Nenhum rascunho salvo ainda.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer / Credit Budget Info -->
+    <footer class="app-footer">
+      <div class="budget-info">
+        <div class="budget-label">
+          <span>Orçamento Diário de Créditos</span>
+          <span id="budget-value">30 / 100</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="budget-progress" class="progress-bar" style="width: 30%;"></div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

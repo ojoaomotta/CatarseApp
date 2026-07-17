@@ -1,0 +1,227 @@
+import { useState } from "react";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import SocialModule from "./components/SocialModule";
+import WhatsAppModule from "./components/WhatsAppModule";
+import FinanceModule from "./components/FinanceModule";
+import CMSModule from "./components/CMSModule";
+import AdminModule from "./components/AdminModule";
+import EmailModule from "./components/EmailModule";
+import EquipmentModule from "./components/EquipmentModule";
+import "./App.css";
+
+interface UserProfile {
+  username: string;
+  role: "admin" | "finance" | "editor";
+  permissions: {
+    can_view_social: boolean;
+    can_view_finances: boolean;
+    can_manage_bots: boolean;
+    can_edit_portfolio: boolean;
+  };
+}
+
+export default function App() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // Premium Web Audio synth notification sound (Apple chime clone)
+  const playChime = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      
+      // Note 1 (A5)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(880, ctx.currentTime);
+      gain1.gain.setValueAtTime(0.04, ctx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start();
+      osc1.stop(ctx.currentTime + 0.4);
+
+      // Note 2 (E6 - slightly delayed harmonizer)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(1320, ctx.currentTime + 0.08);
+      gain2.gain.setValueAtTime(0, ctx.currentTime);
+      gain2.gain.setValueAtTime(0.02, ctx.currentTime + 0.08);
+      gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(ctx.currentTime + 0.08);
+      osc2.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+      console.warn("AudioContext block by browser policy or unsupported:", e);
+    }
+  };
+
+  const handleLogin = (
+    username: string,
+    role: "admin" | "finance" | "editor",
+    permissions: UserProfile["permissions"]
+  ) => {
+    setUser({ username, role, permissions });
+    setActiveTab("dashboard");
+    setTimeout(playChime, 100);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setMobileMenuOpen(false);
+  };
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    setMobileMenuOpen(false);
+  };
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+  };
+
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
+  }
+
+  const navItems = [
+    { id: "dashboard", label: "Dashboard", icon: "🏠", show: true },
+    { id: "social", label: "Redes Sociais", icon: "📈", show: user.permissions.can_view_social },
+    { id: "whatsapp", label: "WhatsApp IA", icon: "💬", show: user.permissions.can_manage_bots },
+    { id: "email", label: "E-mail", icon: "✉️", show: true },
+    { id: "finances", label: "Finanças & IA", icon: "💰", show: user.permissions.can_view_finances },
+    { id: "equipment", label: "Equipamentos", icon: "📷", show: true },
+    { id: "cms", label: "Clientes & Site", icon: "🎬", show: user.permissions.can_edit_portfolio },
+    { id: "admin", label: "Segurança", icon: "⚙️", show: user.role === "admin" }
+  ];
+
+  const renderNavPills = () => {
+    return navItems
+      .filter(item => item.show)
+      .map(item => (
+        <button
+          key={item.id}
+          onClick={() => handleTabChange(item.id)}
+          className={`nav-pill-item ${activeTab === item.id ? "active" : ""}`}
+        >
+          {item.label}
+        </button>
+      ));
+  };
+
+  const renderMobileNavButtons = () => {
+    return navItems
+      .filter(item => item.show)
+      .map(item => (
+        <button
+          key={item.id}
+          onClick={() => handleTabChange(item.id)}
+          className={`nav-item ${activeTab === item.id ? "active" : ""}`}
+        >
+          <span className="nav-icon">{item.icon}</span>
+          <span className="nav-label">{item.label}</span>
+        </button>
+      ));
+  };
+
+  return (
+    <div className={`app-layout theme-${theme}`}>
+      {/* DESKTOP APP HEADER (Horizontal Pills control + Theme Switcher) */}
+      <header className="app-header">
+        <a href="#" className="header-branding" onClick={() => handleTabChange("dashboard")}>
+          <span className="header-logo">catarse</span>
+          <span className="header-logo-badge">| CENTRAL</span>
+        </a>
+
+        <nav className="header-nav-pill-container">
+          {renderNavPills()}
+        </nav>
+
+        <div className="header-actions-right">
+          <button 
+            className="theme-toggle-btn" 
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+          
+          <button onClick={handleLogout} className="header-logout-btn">
+            Sair
+          </button>
+        </div>
+      </header>
+
+      {/* MOBILE HEADER BAR (Fallback for narrow screens) */}
+      <header className="mobile-header">
+        <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          ☰
+        </button>
+        <span className="mobile-logo font-serif">catarse</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <button 
+            className="theme-toggle-btn" 
+            onClick={toggleTheme}
+            style={{ width: "30px", height: "30px", fontSize: "0.85rem" }}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+          <div className="mobile-user-avatar">
+            {user.username.split(" ").map(n => n[0]).join("")}
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE DRAWER OVERLAY */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+          <aside className="mobile-sidebar" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-sidebar-header">
+              <span className="mobile-logo font-serif">catarse</span>
+              <button className="menu-close" onClick={() => setMobileMenuOpen(false)}>✕</button>
+            </div>
+            
+            <nav className="mobile-nav">
+              {renderMobileNavButtons()}
+            </nav>
+
+            <div className="nav-footer">
+              <div className="user-profile">
+                <div className="user-avatar" style={{ border: "1px solid var(--accent-gold-border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-gold)", fontWeight: 600, width: "36px", height: "36px", borderRadius: "50%" }}>
+                  {user.username.split(" ").map(n => n[0]).join("")}
+                </div>
+                <div className="user-info">
+                  <span className="user-name">{user.username}</span>
+                  <span className="user-role" style={{ fontSize: "0.65rem", color: "var(--text-cream-dark)", textTransform: "uppercase" }}>{user.role}</span>
+                </div>
+              </div>
+              <button onClick={handleLogout} className="logout-btn">
+                🚪 Sair da Central
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* Main viewport */}
+      <main className="main-content">
+        {activeTab === "dashboard" && <Dashboard user={user} setActiveTab={setActiveTab} />}
+        {activeTab === "social" && user.permissions.can_view_social && <SocialModule />}
+        {activeTab === "whatsapp" && user.permissions.can_manage_bots && <WhatsAppModule />}
+        {activeTab === "email" && <EmailModule />}
+        {activeTab === "finances" && user.permissions.can_view_finances && <FinanceModule />}
+        {activeTab === "equipment" && <EquipmentModule user={user} />}
+        {activeTab === "cms" && user.permissions.can_edit_portfolio && <CMSModule />}
+        {activeTab === "admin" && user.role === "admin" && <AdminModule />}
+      </main>
+    </div>
+  );
+}

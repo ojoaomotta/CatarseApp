@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Base44 & Lovable Prompt Optimizer & Credit Monitor",
+  "version": "1.0.0",
+  "description": "Otimize prompts para economizar tokens e monitore seus créditos no Base44 e Lovable.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://base44.cloud/*",
+        "https://*.base44.cloud/*",
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ]
+}
