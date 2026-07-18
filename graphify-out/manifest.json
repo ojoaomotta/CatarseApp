@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784334589.9788113,
-    "ast_hash": "a0d6a18537fe7983fc0342384390b0cb",
+    "mtime": 1784334694.6296272,
+    "ast_hash": "cdad9bb869b21e9f7e011c937c63b353",
     "semantic_hash": ""
   },
   "prompt-optimizer-ext/content.js": {
@@ -65,13 +65,13 @@
     "semantic_hash": ""
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1784334594.3589115,
-    "ast_hash": "e59663558e7e92927875ff954c844874",
+    "mtime": 1784334703.5956779,
+    "ast_hash": "38fb51923ebdc25345c5b7147713e26d",
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1784334568.290181,
-    "ast_hash": "c2a92f0d3b4538a6bea06c89bea84ec6",
+    "mtime": 1784334721.2380636,
+    "ast_hash": "c6a5a7475f0a724579d3ae3915dba8cf",
     "semantic_hash": ""
   },
   "src/components/AdminModule.tsx": {

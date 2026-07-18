@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784333645.4328654,
-    "ast_hash": "6af4b4b5bf57d6aadbcae4370d04a1a2",
+    "mtime": 1784334589.9788113,
+    "ast_hash": "a0d6a18537fe7983fc0342384390b0cb",
     "semantic_hash": ""
   },
   "prompt-optimizer-ext/content.js": {
@@ -65,13 +65,13 @@
     "semantic_hash": ""
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1784333654.7972763,
-    "ast_hash": "2018a4bf41cc07682842638e669d5846",
+    "mtime": 1784334594.3589115,
+    "ast_hash": "e59663558e7e92927875ff954c844874",
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1784328076.1278982,
-    "ast_hash": "6f3fa98a57b8e78a9dae5b74977548c8",
+    "mtime": 1784334568.290181,
+    "ast_hash": "c2a92f0d3b4538a6bea06c89bea84ec6",
     "semantic_hash": ""
   },
   "src/components/AdminModule.tsx": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "src/components/Dashboard.tsx": {
-    "mtime": 1784139959.588661,
-    "ast_hash": "745a9ea53e8e649c04f078894c08e9fd",
+    "mtime": 1784334497.8364396,
+    "ast_hash": "e04547b9df7847e6b94cb6697866c939",
     "semantic_hash": ""
   },
   "src/components/EmailModule.tsx": {
@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "src/components/EquipmentModule.tsx": {
-    "mtime": 1784328029.8370383,
-    "ast_hash": "b9ba9ba9e0b3af6ac60d8b28c901e1f6",
+    "mtime": 1784334528.4660137,
+    "ast_hash": "2bf3e58ff21b41acd05ca467b85fc965",
     "semantic_hash": ""
   },
   "supabase_equipment_schema.sql": {

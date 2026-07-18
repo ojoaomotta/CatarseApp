@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
 interface LoginProps {
@@ -10,14 +10,38 @@ interface LoginProps {
   }) => void;
 }
 
+interface SavedUser {
+  email: string;
+  name: string;
+}
+
 export default function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  
+  // State for remembered user
+  const [savedUser, setSavedUser] = useState<SavedUser | null>(null);
+
+  // Check for saved user on mount
+  useEffect(() => {
+    const cached = localStorage.getItem("catarse_remembered_user");
+    if (cached) {
+      try {
+        setSavedUser(JSON.parse(cached));
+      } catch {
+        localStorage.removeItem("catarse_remembered_user");
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    
+    // Resolve email to use: either the input or the saved user's email
+    const loginEmail = savedUser ? savedUser.email : email;
+
+    if (!loginEmail || !password) {
       setError("Por favor, preencha todos os campos.");
       return;
     }
@@ -26,11 +50,17 @@ export default function Login({ onLogin }: LoginProps) {
       const { data, error: sbError } = await supabase
         .from("app_users")
         .select("*")
-        .eq("email", email)
+        .eq("email", loginEmail)
         .eq("password", password)
         .single();
 
       if (!sbError && data) {
+        // Save user to localStorage for the next session
+        localStorage.setItem(
+          "catarse_remembered_user",
+          JSON.stringify({ email: data.email, name: data.name })
+        );
+
         onLogin(data.name, data.role as any, {
           can_view_social: data.can_view_social !== false,
           can_view_finances: data.can_view_finances !== false,
@@ -39,11 +69,19 @@ export default function Login({ onLogin }: LoginProps) {
         });
         return;
       } else {
-        setError("E-mail ou senha incorretos.");
+        setError("Senha ou e-mail incorretos.");
       }
     } catch (err: any) {
       setError("Erro ao conectar ao banco de dados: " + err.message);
     }
+  };
+
+  const handleClearSavedUser = () => {
+    localStorage.removeItem("catarse_remembered_user");
+    setSavedUser(null);
+    setEmail("");
+    setPassword("");
+    setError("");
   };
 
   return (
@@ -59,17 +97,35 @@ export default function Login({ onLogin }: LoginProps) {
         <form onSubmit={handleSubmit} style={styles.form}>
           {error && <div style={styles.error}>{error}</div>}
           
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>E-mail</label>
-            <input
-              type="email"
-              placeholder="exemplo@catarsefilm.com"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setError(""); }}
-              style={styles.input}
-            />
-          </div>
+          {savedUser ? (
+            /* Remembered User UI */
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", textAlign: "center" }}>
+              <div style={styles.avatar}>
+                {savedUser.name.split(" ").map(n => n[0]).join("")}
+              </div>
+              <div style={{ marginBottom: "0.5rem" }}>
+                <span style={{ fontSize: "0.8rem", color: "var(--text-cream-dim)" }}>Bem-vindo de volta,</span>
+                <h3 style={{ margin: "0.2rem 0", fontSize: "1.2rem", fontWeight: 700, color: "var(--text-cream)" }}>
+                  {savedUser.name}
+                </h3>
+                <span style={{ fontSize: "0.72rem", color: "var(--text-cream-dark)" }}>{savedUser.email}</span>
+              </div>
+            </div>
+          ) : (
+            /* Default Email Input UI */
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>E-mail</label>
+              <input
+                type="email"
+                placeholder="exemplo@catarsefilm.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                style={styles.input}
+              />
+            </div>
+          )}
 
+          {/* Password Input (Shown in both flows) */}
           <div style={styles.inputGroup}>
             <label style={styles.label}>Senha</label>
             <input
@@ -78,6 +134,7 @@ export default function Login({ onLogin }: LoginProps) {
               value={password}
               onChange={(e) => { setPassword(e.target.value); setError(""); }}
               style={styles.input}
+              autoFocus={!!savedUser}
             />
           </div>
 
@@ -85,6 +142,17 @@ export default function Login({ onLogin }: LoginProps) {
             Entrar no Estúdio
           </button>
         </form>
+
+        {savedUser && (
+          <div style={{ marginTop: "0.5rem" }}>
+            <button
+              onClick={handleClearSavedUser}
+              style={styles.switchAccountBtn}
+            >
+              Entrar em uma conta diferente
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -135,56 +203,59 @@ const styles: { [key: string]: React.CSSProperties } = {
   inputGroup: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.5rem",
+    gap: "0.4rem",
   },
   label: {
     fontSize: "0.75rem",
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
     color: "var(--text-cream-dim)",
-    fontWeight: 500,
+    fontWeight: 600,
+  },
+  input: {
+    backgroundColor: "var(--bg-moss)",
+    border: "1px solid var(--glass-border)",
+    borderRadius: "8px",
+    padding: "0.75rem 1rem",
+    color: "var(--text-cream)",
+    fontSize: "0.85rem",
+    outline: "none",
   },
   button: {
-    marginTop: "0.5rem",
-    width: "100%",
-    padding: "0.9rem",
+    padding: "0.85rem",
     fontSize: "0.85rem",
+    fontWeight: 600,
+    marginTop: "0.5rem",
   },
   error: {
-    color: "var(--danger)",
+    backgroundColor: "rgba(224, 107, 107, 0.15)",
+    border: "1px solid rgba(224, 107, 107, 0.3)",
+    borderRadius: "8px",
+    color: "#e06b6b",
     fontSize: "0.8rem",
-    backgroundColor: "rgba(207, 102, 121, 0.1)",
-    border: "1px solid rgba(207, 102, 121, 0.2)",
-    padding: "0.75rem",
-    borderRadius: "4px",
+    padding: "0.75rem 1rem",
     textAlign: "center",
   },
-  divider: {
+  avatar: {
+    width: "64px",
+    height: "64px",
+    borderRadius: "50%",
+    border: "2px solid var(--accent-gold-border)",
+    backgroundColor: "var(--accent-gold-dim)",
+    color: "var(--accent-gold)",
     display: "flex",
     alignItems: "center",
-    gap: "0.75rem",
-    margin: "1rem 0 0.5rem 0",
+    justifyContent: "center",
+    fontSize: "1.5rem",
+    fontWeight: 700,
+    margin: "0 auto 0.5rem",
   },
-  dividerLine: {
-    flex: 1,
-    height: "1px",
-    backgroundColor: "var(--glass-border)",
-  },
-  dividerText: {
-    fontSize: "0.65rem",
-    textTransform: "uppercase",
+  switchAccountBtn: {
+    background: "none",
+    border: "none",
     color: "var(--text-cream-dark)",
-    letterSpacing: "0.05em",
-  },
-  demoButtons: {
-    display: "flex",
-    gap: "0.5rem",
-    justifyContent: "space-between",
-  },
-  demoBtn: {
-    flex: 1,
-    padding: "0.6rem 0.2rem",
-    fontSize: "0.65rem",
-    letterSpacing: "0.05em",
+    fontSize: "0.75rem",
+    cursor: "pointer",
+    textDecoration: "underline",
+    padding: "0.25rem",
+    transition: "color 0.2s",
   }
 };

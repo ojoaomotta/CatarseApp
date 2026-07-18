@@ -22,7 +22,7 @@ interface UserProfile {
   };
 }
 
-const LOCAL_VERSION = "0.5.0";
+const LOCAL_VERSION = "0.6.0";
 
 export default function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
