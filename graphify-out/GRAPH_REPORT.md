@@ -1,16 +1,16 @@
 # Graph Report - Catarse App  (2026-07-17)
 
 ## Corpus Check
-- 38 files · ~84,224 words
+- 38 files · ~84,953 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 301 nodes · 301 edges · 23 communities (19 shown, 4 thin omitted)
+- 301 nodes · 303 edges · 23 communities (19 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cb28ffa3`
+- Built from commit: `30b534d8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -38,13 +38,13 @@
 1. `compilerOptions` - 16 edges
 2. `definitions` - 9 edges
 3. `definitions` - 9 edges
-4. `compilerOptions` - 6 edges
-5. `scripts` - 5 edges
-6. `Capability` - 5 edges
-7. `permissions` - 5 edges
-8. `CapabilityRemote` - 5 edges
-9. `Capability` - 5 edges
-10. `permissions` - 5 edges
+4. `supabase` - 6 edges
+5. `compilerOptions` - 6 edges
+6. `scripts` - 5 edges
+7. `Capability` - 5 edges
+8. `permissions` - 5 edges
+9. `CapabilityRemote` - 5 edges
+10. `Capability` - 5 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -127,7 +127,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _178 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.05975609756097561 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06219512195121951 - nodes in this community are weakly interconnected._
 - **Should `properties` be split into smaller, more focused modules?**
   _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
 - **Should `properties` be split into smaller, more focused modules?**
