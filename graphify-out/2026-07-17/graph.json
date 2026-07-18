@@ -2177,7 +2177,7 @@
       "label": "UserProfile",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "src_app_userprofile",
       "community": 0,
@@ -2187,7 +2187,7 @@
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L24",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 0,
@@ -5162,7 +5162,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_app",
@@ -5172,7 +5172,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_userprofile",
@@ -6072,5 +6072,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "30b534d8f4d995321cbc5eca57f03dedd521c643"
+  "built_at_commit": "97b40bd42b54167f25f83aa6889383a3348f7214"
 }

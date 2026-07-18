@@ -2464,10 +2464,20 @@
       "norm_label": "loginprops"
     },
     {
-      "label": "Login()",
+      "label": "SavedUser",
       "file_type": "code",
       "source_file": "src/components/Login.tsx",
       "source_location": "L13",
+      "_origin": "ast",
+      "id": "src_components_login_saveduser",
+      "community": 0,
+      "norm_label": "saveduser"
+    },
+    {
+      "label": "Login()",
+      "file_type": "code",
+      "source_file": "src/components/Login.tsx",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_login_login",
       "community": 0,
@@ -2477,7 +2487,7 @@
       "label": "styles",
       "file_type": "code",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L93",
+      "source_location": "L161",
       "_origin": "ast",
       "id": "src_components_login_styles",
       "community": 0,
@@ -5267,17 +5277,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_components_login_login",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -5592,7 +5591,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L13",
+      "source_location": "L18",
       "weight": 1.0,
       "source": "src_components_login",
       "target": "src_components_login_login",
@@ -5612,7 +5611,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L93",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_components_login",
+      "target": "src_components_login_saveduser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/Login.tsx",
+      "source_location": "L161",
       "weight": 1.0,
       "source": "src_components_login",
       "target": "src_components_login_styles",
@@ -6072,5 +6081,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "97b40bd42b54167f25f83aa6889383a3348f7214"
+  "built_at_commit": "85f196f8fe2d7f85e1722f98ed7813f4b37a55a6"
 }

@@ -8,7 +8,8 @@ import CMSModule from "./components/CMSModule";
 import AdminModule from "./components/AdminModule";
 import EmailModule from "./components/EmailModule";
 import EquipmentModule from "./components/EquipmentModule";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { check } from "@tauri-apps/plugin-updater";
+import { relaunch } from "@tauri-apps/plugin-process";
 import "./App.css";
 
 interface UserProfile {
@@ -22,49 +23,27 @@ interface UserProfile {
   };
 }
 
-const LOCAL_VERSION = "0.6.0";
-
 export default function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
-  const [updateAvailable, setUpdateAvailable] = useState<string | null>(null);
+  const [updateAvailable, setUpdateAvailable] = useState<any | null>(null);
+  const [updating, setUpdating] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   useEffect(() => {
     const checkUpdate = async () => {
       try {
-        const res = await fetch("https://api.github.com/repos/ojoaomotta/CatarseApp/releases/latest");
-        if (!res.ok) return;
-        const data = await res.json();
-        const latestTag = data.tag_name;
-        
-        // Clean version strings
-        const cleanLatest = latestTag.replace(/[a-zA-Z-]/g, "");
-        const cleanLocal = LOCAL_VERSION;
-        
-        // Semver comparison
-        const latestParts = cleanLatest.split(".").map(Number);
-        const localParts = cleanLocal.split(".").map(Number);
-        
-        let hasNewer = false;
-        for (let i = 0; i < Math.max(latestParts.length, localParts.length); i++) {
-          const latestPart = latestParts[i] || 0;
-          const localPart = localParts[i] || 0;
-          if (latestPart > localPart) {
-            hasNewer = true;
-            break;
-          } else if (latestPart < localPart) {
-            break;
-          }
-        }
-        
-        if (hasNewer) {
-          setUpdateAvailable(latestTag);
+        console.log("Verificando atualizações via tauri-plugin-updater...");
+        const update = await check();
+        if (update) {
+          console.log("Nova versão encontrada no canal do GitHub:", update.version);
+          setUpdateAvailable(update);
         }
       } catch (err) {
-        console.warn("Falha ao verificar atualizações:", err);
+        console.warn("Tauri updater não disponível neste ambiente:", err);
       }
     };
     
@@ -72,6 +51,42 @@ export default function App() {
     const timer = setTimeout(checkUpdate, 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleStartUpdate = async () => {
+    if (!updateAvailable) return;
+    setUpdating(true);
+    setDownloadProgress(0);
+
+    try {
+      let downloaded = 0;
+      let contentLength = 0;
+
+      await updateAvailable.downloadAndInstall((event: any) => {
+        switch (event.event) {
+          case 'Started':
+            contentLength = event.data.contentLength || 1;
+            console.log(`Iniciando download: ${contentLength} bytes`);
+            break;
+          case 'Progress':
+            downloaded += event.data.chunkLength;
+            const pct = Math.min(Math.round((downloaded / contentLength) * 100), 99);
+            setDownloadProgress(pct);
+            break;
+          case 'Finished':
+            setDownloadProgress(100);
+            console.log('Download concluído!');
+            break;
+        }
+      });
+
+      // Reinicia o app automaticamente para aplicar a atualização
+      await relaunch();
+    } catch (err: any) {
+      alert("Erro ao realizar atualização automática: " + err.message);
+      setUpdating(false);
+      setUpdateAvailable(null);
+    }
+  };
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -343,7 +358,7 @@ export default function App() {
           <div className="glass-panel gold-glow" style={{
             width: "90%",
             maxWidth: "420px",
-            padding: "2rem",
+            padding: "2.5rem 2rem",
             borderRadius: "12px",
             border: "1px solid var(--accent-gold-border)",
             backgroundColor: "var(--bg-moss)",
@@ -356,32 +371,55 @@ export default function App() {
             <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--accent-gold)" }}>
               Nova Versão Disponível!
             </h3>
-            <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-cream-dim)", lineHeight: 1.6 }}>
-              Uma nova atualização ({updateAvailable}) está pronta para a Central da Catarse Film. Deseja baixar e instalar agora?
-            </p>
-            <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
-              <button
-                onClick={() => setUpdateAvailable(null)}
-                className="btn-secondary"
-                style={{ flex: 1, padding: "0.75rem", fontSize: "0.8rem", cursor: "pointer" }}
-              >
-                Depois
-              </button>
-              <button
-                onClick={async () => {
-                  try {
-                    await openUrl("https://github.com/ojoaomotta/CatarseApp/releases/latest");
-                  } catch {
-                    window.open("https://github.com/ojoaomotta/CatarseApp/releases/latest", "_blank");
-                  }
-                  setUpdateAvailable(null);
-                }}
-                className="btn-primary"
-                style={{ flex: 1, padding: "0.75rem", fontSize: "0.8rem", cursor: "pointer" }}
-              >
-                Instalar Agora
-              </button>
-            </div>
+            
+            {!updating ? (
+              <>
+                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-cream-dim)", lineHeight: 1.6 }}>
+                  A versão <strong>v{updateAvailable.version}</strong> está pronta para a Central da Catarse Film. Deseja atualizar e reiniciar agora?
+                </p>
+                <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
+                  <button
+                    onClick={() => setUpdateAvailable(null)}
+                    className="btn-secondary"
+                    style={{ flex: 1, padding: "0.75rem", fontSize: "0.8rem", cursor: "pointer" }}
+                  >
+                    Depois
+                  </button>
+                  <button
+                    onClick={handleStartUpdate}
+                    className="btn-primary"
+                    style={{ flex: 1, padding: "0.75rem", fontSize: "0.8rem", cursor: "pointer" }}
+                  >
+                    Atualizar Agora
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "0.5rem" }}>
+                <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-cream)" }}>
+                  Instalando atualização... {downloadProgress}%
+                </p>
+                <div style={{
+                  width: "100%",
+                  height: "10px",
+                  backgroundColor: "rgba(255,255,255,0.06)",
+                  borderRadius: "5px",
+                  overflow: "hidden",
+                  border: "1px solid var(--glass-border)"
+                }}>
+                  <div style={{
+                    width: `${downloadProgress}%`,
+                    height: "100%",
+                    backgroundColor: "var(--accent-gold)",
+                    boxShadow: "0 0 10px var(--accent-gold-shadow)",
+                    transition: "width 0.2s ease-out"
+                  }}></div>
+                </div>
+                <span style={{ fontSize: "0.72rem", color: "var(--text-cream-dark)" }}>
+                  Por favor, não feche o aplicativo. Ele reiniciará sozinho ao finalizar.
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}

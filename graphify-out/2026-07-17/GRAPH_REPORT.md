@@ -1,7 +1,7 @@
 # Graph Report - Catarse App  (2026-07-17)
 
 ## Corpus Check
-- 38 files · ~84,953 words
+- 38 files · ~85,268 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `30b534d8`
+- Built from commit: `97b40bd4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
