@@ -1,13 +1,18 @@
 # Graph Report - Catarse App  (2026-07-17)
 
 ## Corpus Check
-- 36 files · ~80,426 words
+- 38 files · ~84,224 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 300 nodes · 301 edges · 22 communities (18 shown, 4 thin omitted)
+- 301 nodes · 301 edges · 23 communities (19 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `cb28ffa3`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - App.tsx
@@ -47,7 +52,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (22 total, 4 thin omitted)
+## Communities (23 total, 4 thin omitted)
 
 ### Community 0 - "App.tsx"
 Cohesion: 0.06

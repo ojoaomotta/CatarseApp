@@ -1080,7 +1080,7 @@
       "source_location": "L344",
       "_origin": "ast",
       "id": "src_tauri_gen_schemas_desktop_schema_definitions_identifier",
-      "community": 3,
+      "community": 1,
       "norm_label": "identifier"
     },
     {
@@ -1090,7 +1090,7 @@
       "source_location": "L346",
       "_origin": "ast",
       "id": "src_tauri_gen_schemas_desktop_schema_identifier_oneof",
-      "community": 3,
+      "community": 1,
       "norm_label": "oneof"
     },
     {
@@ -1780,7 +1780,7 @@
       "source_location": "L344",
       "_origin": "ast",
       "id": "src_tauri_gen_schemas_macos_schema_definitions_identifier",
-      "community": 2,
+      "community": 4,
       "norm_label": "identifier"
     },
     {
@@ -1790,7 +1790,7 @@
       "source_location": "L346",
       "_origin": "ast",
       "id": "src_tauri_gen_schemas_macos_schema_identifier_oneof",
-      "community": 2,
+      "community": 4,
       "norm_label": "oneof"
     },
     {
@@ -2304,30 +2304,10 @@
       "norm_label": "emailmodule.tsx"
     },
     {
-      "label": "CatarseEmail",
-      "file_type": "code",
-      "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L5",
-      "_origin": "ast",
-      "id": "src_components_emailmodule_catarseemail",
-      "community": 0,
-      "norm_label": "catarseemail"
-    },
-    {
-      "label": "CategoryFilter",
-      "file_type": "code",
-      "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "src_components_emailmodule_categoryfilter",
-      "community": 0,
-      "norm_label": "categoryfilter"
-    },
-    {
       "label": "EmailModule()",
       "file_type": "code",
       "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L18",
+      "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_emailmodule_emailmodule",
       "community": 0,
@@ -2337,7 +2317,7 @@
       "label": "styles",
       "file_type": "code",
       "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L387",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "src_components_emailmodule_styles",
       "community": 0,
@@ -2504,30 +2484,10 @@
       "norm_label": "socialmodule.tsx"
     },
     {
-      "label": "YouTubeVideo",
-      "file_type": "code",
-      "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "src_components_socialmodule_youtubevideo",
-      "community": 0,
-      "norm_label": "youtubevideo"
-    },
-    {
-      "label": "InstagramPost",
-      "file_type": "code",
-      "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "src_components_socialmodule_instagrampost",
-      "community": 0,
-      "norm_label": "instagrampost"
-    },
-    {
       "label": "SocialModule()",
       "file_type": "code",
       "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L20",
+      "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_socialmodule_socialmodule",
       "community": 0,
@@ -2537,7 +2497,7 @@
       "label": "styles",
       "file_type": "code",
       "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L292",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "src_components_socialmodule_styles",
       "community": 0,
@@ -5468,27 +5428,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "src_components_emailmodule",
-      "target": "src_components_emailmodule_catarseemail",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "src_components_emailmodule",
-      "target": "src_components_emailmodule_categoryfilter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L18",
+      "source_location": "L4",
       "weight": 1.0,
       "source": "src_components_emailmodule",
       "target": "src_components_emailmodule_emailmodule",
@@ -5498,32 +5438,10 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L387",
+      "source_location": "L38",
       "weight": 1.0,
       "source": "src_components_emailmodule",
       "target": "src_components_emailmodule_styles",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_components_emailmodule",
-      "target": "src_lib_supabase",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/EmailModule.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_components_emailmodule",
-      "target": "src_lib_supabase_supabase",
       "confidence_score": 1.0
     },
     {
@@ -5694,17 +5612,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "src_components_socialmodule",
-      "target": "src_components_socialmodule_instagrampost",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L20",
+      "source_location": "L3",
       "weight": 1.0,
       "source": "src_components_socialmodule",
       "target": "src_components_socialmodule_socialmodule",
@@ -5714,20 +5622,10 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L292",
+      "source_location": "L26",
       "weight": 1.0,
       "source": "src_components_socialmodule",
       "target": "src_components_socialmodule_styles",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/SocialModule.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_components_socialmodule",
-      "target": "src_components_socialmodule_youtubevideo",
       "confidence_score": 1.0
     },
     {

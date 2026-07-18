@@ -48,6 +48,13 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
   const [newItemCategory, setNewItemCategory] = useState("Câmera");
   const [newItemSerial, setNewItemSerial] = useState("");
 
+  // Edit Equipment Modal
+  const [editingItem, setEditingItem] = useState<Equipment | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editSerial, setEditSerial] = useState("");
+  const [editStatus, setEditStatus] = useState<"Disponível" | "Em Uso" | "Manutenção">("Disponível");
+
   // Load Inventory & Logs
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -78,7 +85,7 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
     loadData();
   }, [loadData]);
 
-  // Handle equipment registration (Admin only)
+  // Add Equipment
   const handleAddEquipment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItemName.trim()) return;
@@ -103,6 +110,57 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
     }
   };
 
+  // Delete Equipment
+  const handleDeleteEquipment = async (id: string) => {
+    if (!window.confirm("Deseja realmente remover este equipamento? O histórico de logs será mantido.")) return;
+    try {
+      setLoading(true);
+      const { error } = await supabase.from("equipment").delete().eq("id", id);
+      if (error) throw error;
+      await loadData();
+    } catch (e: any) {
+      alert("Erro ao excluir equipamento: " + e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Open Edit Modal
+  const openEditModal = (item: Equipment) => {
+    setEditingItem(item);
+    setEditName(item.name);
+    setEditCategory(item.category);
+    setEditSerial(item.serial_number || "");
+    setEditStatus(item.status);
+  };
+
+  // Save Edits
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .from("equipment")
+        .update({
+          name: editName,
+          category: editCategory,
+          serial_number: editSerial,
+          status: editStatus
+        })
+        .eq("id", editingItem.id);
+
+      if (error) throw error;
+      setEditingItem(null);
+      await loadData();
+    } catch (e: any) {
+      alert("Erro ao atualizar equipamento: " + e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Toggle selection
   const handleToggleSelect = (id: string) => {
     setSelectedItemIds((prev) =>
@@ -116,7 +174,6 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
 
     try {
       setLoading(true);
-      // 1. Update status to 'Em Uso' for all selected items
       const { error: updateError } = await supabase
         .from("equipment")
         .update({ status: "Em Uso" })
@@ -124,7 +181,6 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
 
       if (updateError) throw updateError;
 
-      // 2. Insert log entries for each
       const logEntries = selectedItemIds.map((id) => {
         const item = equipmentList.find((e) => e.id === id);
         return {
@@ -156,7 +212,6 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
 
     try {
       setLoading(true);
-      // 1. Update status to 'Disponível' for all selected items
       const { error: updateError } = await supabase
         .from("equipment")
         .update({ status: "Disponível" })
@@ -164,7 +219,6 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
 
       if (updateError) throw updateError;
 
-      // 2. Insert log entries for each
       const logEntries = selectedItemIds.map((id) => {
         const item = equipmentList.find((e) => e.id === id);
         return {
@@ -190,14 +244,12 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
     }
   };
 
-  // Change Sub-tab and clear selections
   const changeSubTab = (tab: "inventory" | "checkout" | "checkin" | "logs") => {
     setActiveSubTab(tab);
     setSelectedItemIds([]);
     setMovementNotes("");
   };
 
-  // Filters
   const filteredEquipment = equipmentList.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.serial_number.toLowerCase().includes(searchQuery.toLowerCase());
@@ -270,7 +322,7 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
               )}
             </div>
 
-            {/* Add Equipment Form (Admin only) */}
+            {/* Add Equipment Form */}
             {showAddForm && (
               <form onSubmit={handleAddEquipment} className="animate-fade-in" style={styles.addForm}>
                 <div style={styles.formGroup}>
@@ -315,12 +367,13 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
                     <th style={styles.th}>Categoria</th>
                     <th style={styles.th}>Nº de Série</th>
                     <th style={styles.th}>Status</th>
+                    <th style={{ ...styles.th, textAlign: "right" }}>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredEquipment.length === 0 ? (
                     <tr>
-                      <td colSpan={4} style={{ textAlign: "center", padding: "2rem", color: "var(--text-cream-dim)" }}>
+                      <td colSpan={5} style={{ textAlign: "center", padding: "2rem", color: "var(--text-cream-dim)" }}>
                         Nenhum equipamento cadastrado ou correspondente aos filtros.
                       </td>
                     </tr>
@@ -342,6 +395,22 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
                           }}>
                             {item.status}
                           </span>
+                        </td>
+                        <td style={{ ...styles.td, textAlign: "right" }}>
+                          <button
+                            onClick={() => openEditModal(item)}
+                            className="btn-secondary"
+                            style={{ padding: "0.25rem 0.6rem", fontSize: "0.7rem", marginRight: "0.5rem" }}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleDeleteEquipment(item.id)}
+                            className="btn-secondary"
+                            style={{ padding: "0.25rem 0.6rem", fontSize: "0.7rem", color: "#e06b6b", border: "1px solid rgba(224,107,107,0.3)" }}
+                          >
+                            Excluir
+                          </button>
                         </td>
                       </tr>
                     ))
@@ -524,6 +593,62 @@ export default function EquipmentModule({ user }: EquipmentModuleProps) {
           </div>
         )}
       </div>
+
+      {/* Edit Equipment Modal */}
+      {editingItem && (
+        <div style={styles.modalOverlay}>
+          <div className="glass-panel gold-glow" style={styles.modalContent}>
+            <h3 style={{ margin: "0 0 1.25rem 0", color: "var(--accent-gold)", fontSize: "1.1rem" }}>Editar Equipamento</h3>
+            <form onSubmit={handleSaveEdit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Nome do Equipamento</label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  style={styles.formInput}
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Categoria</label>
+                <select value={editCategory} onChange={(e) => setEditCategory(e.target.value)} style={styles.formInput}>
+                  {categories.filter((c) => c !== "Todas").map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Nº de Série (Serial)</label>
+                <input
+                  type="text"
+                  value={editSerial}
+                  onChange={(e) => setEditSerial(e.target.value)}
+                  style={styles.formInput}
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Status</label>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value as any)}
+                  style={styles.formInput}
+                >
+                  <option value="Disponível">Disponível</option>
+                  <option value="Em Uso">Em Uso</option>
+                  <option value="Manutenção">Manutenção</option>
+                </select>
+              </div>
+              <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem", justifyContent: "flex-end" }}>
+                <button type="button" onClick={() => setEditingItem(null)} className="btn-secondary" style={{ padding: "0.5rem 1rem", fontSize: "0.78rem" }}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary" style={{ padding: "0.5rem 1.2rem", fontSize: "0.78rem" }}>
+                  Salvar Alterações
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -556,4 +681,6 @@ const styles: Record<string, React.CSSProperties> = {
   gridSelect: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.75rem", maxHeight: "400px", overflowY: "auto" as const, paddingRight: "0.5rem" },
   selectCard: { border: "1px solid", borderRadius: "10px", padding: "1rem", cursor: "pointer", transition: "all 0.15s" },
   checkbox: { accentColor: "var(--accent-gold)", width: "15px", height: "15px" },
+  modalOverlay: { position: "fixed" as const, top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", justifyContent: "center", alignItems: "center" },
+  modalContent: { width: "90%", maxWidth: "400px", padding: "1.5rem", borderRadius: "12px", border: "1px solid var(--accent-gold-border)", backgroundColor: "var(--bg-moss)" }
 };

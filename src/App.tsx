@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import SocialModule from "./components/SocialModule";
@@ -26,6 +26,26 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      setContextMenu({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleCloseMenu = () => {
+      setContextMenu(null);
+    };
+
+    window.addEventListener("contextmenu", handleContextMenu);
+    window.addEventListener("click", handleCloseMenu);
+
+    return () => {
+      window.removeEventListener("contextmenu", handleContextMenu);
+      window.removeEventListener("click", handleCloseMenu);
+    };
+  }, []);
 
   // Premium Web Audio synth notification sound (Apple chime clone)
   const playChime = () => {
@@ -222,6 +242,44 @@ export default function App() {
         {activeTab === "cms" && user.permissions.can_edit_portfolio && <CMSModule />}
         {activeTab === "admin" && user.role === "admin" && <AdminModule />}
       </main>
+
+      {contextMenu && (
+        <div style={{
+          position: "fixed",
+          top: contextMenu.y,
+          left: contextMenu.x,
+          backgroundColor: "var(--bg-moss)",
+          border: "1px solid var(--accent-gold-border)",
+          borderRadius: "8px",
+          padding: "4px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
+          zIndex: 9999,
+          width: "120px"
+        }}>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              width: "100%",
+              backgroundColor: "transparent",
+              border: "none",
+              color: "var(--text-cream)",
+              padding: "8px 12px",
+              textAlign: "left",
+              fontSize: "0.8rem",
+              cursor: "pointer",
+              borderRadius: "4px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontWeight: 500
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(212, 205, 168, 0.08)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+          >
+            🔄 Atualizar
+          </button>
+        </div>
+      )}
     </div>
   );
 }
