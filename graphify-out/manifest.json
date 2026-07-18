@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784335471.3328435,
-    "ast_hash": "3587338c8cbcd31f618f013eb57bea58",
+    "mtime": 1784336529.6355503,
+    "ast_hash": "faf9a64b4973d8598bdfa5df14884abd",
     "semantic_hash": ""
   },
   "prompt-optimizer-ext/content.js": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1784328012.8755207,
-    "ast_hash": "bb48f6fa380ecd725d43e64ba20183fd",
+    "mtime": 1784336454.6716404,
+    "ast_hash": "55751bd7fdd89228e6b3c837693cdf33",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -65,13 +65,13 @@
     "semantic_hash": ""
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1784335480.4977415,
-    "ast_hash": "8842efa331b6cea2aec21b909d162e6b",
+    "mtime": 1784336534.7260413,
+    "ast_hash": "f7b2531efcce92a9b20f20d96dc6f6d1",
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1784335499.36056,
-    "ast_hash": "565355353ea82c289c786bb62e8367e3",
+    "mtime": 1784336502.043734,
+    "ast_hash": "663c1bde3d9c75f3ab1c0ff0889c2e50",
     "semantic_hash": ""
   },
   "src/components/AdminModule.tsx": {
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/release.yml": {
-    "mtime": 1784330642.8846266,
-    "ast_hash": "538228928a7c42c02ae049bd91f09b70",
+    "mtime": 1784336514.0744586,
+    "ast_hash": "3915cd7892fed7751d45dc8f897ef68d",
     "semantic_hash": ""
   },
   "rounded_logo.png": {
