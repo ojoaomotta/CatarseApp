@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784336529.6355503,
-    "ast_hash": "faf9a64b4973d8598bdfa5df14884abd",
+    "mtime": 1784337342.503701,
+    "ast_hash": "39eb1d89449af1a8d16f5f1baa98da6c",
     "semantic_hash": ""
   },
   "prompt-optimizer-ext/content.js": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "src-tauri/gen/schemas/acl-manifests.json": {
-    "mtime": 1784140246.0287888,
-    "ast_hash": "4ddc20785dbed79e08b9b40e4cb20084",
+    "mtime": 1784337322.8324008,
+    "ast_hash": "e798035b48e8caff38057eb48b2eba1e",
     "semantic_hash": ""
   },
   "src-tauri/gen/schemas/capabilities.json": {
@@ -45,18 +45,18 @@
     "semantic_hash": ""
   },
   "src-tauri/gen/schemas/desktop-schema.json": {
-    "mtime": 1784140246.033814,
-    "ast_hash": "76556e1cac5fd616756034d0ab662f7e",
+    "mtime": 1784337322.8582504,
+    "ast_hash": "d25c0330aaee73ed15274f88f4242bc4",
     "semantic_hash": ""
   },
   "src-tauri/gen/schemas/macOS-schema.json": {
-    "mtime": 1784140246.033814,
-    "ast_hash": "76556e1cac5fd616756034d0ab662f7e",
+    "mtime": 1784337322.8582504,
+    "ast_hash": "d25c0330aaee73ed15274f88f4242bc4",
     "semantic_hash": ""
   },
   "src-tauri/src/lib.rs": {
-    "mtime": 1784336454.6716404,
-    "ast_hash": "55751bd7fdd89228e6b3c837693cdf33",
+    "mtime": 1784337272.8895228,
+    "ast_hash": "6493b841135668109ce96b2d53843cbd",
     "semantic_hash": ""
   },
   "src-tauri/src/main.rs": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1784336534.7260413,
-    "ast_hash": "f7b2531efcce92a9b20f20d96dc6f6d1",
+    "mtime": 1784337348.1304975,
+    "ast_hash": "acc6db8cc592a9683fe1550513ae34d0",
     "semantic_hash": ""
   },
   "src/App.tsx": {
