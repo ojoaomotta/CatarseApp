@@ -60,11 +60,13 @@ CREATE POLICY "Allow all for lab_portfolio" ON lab_portfolio FOR ALL USING (true
 CREATE TABLE IF NOT EXISTS app_users (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   name text NOT NULL,
-  email text NOT NULL UNIQUE,
-  password_hash text NOT NULL,
-  role text NOT NULL DEFAULT 'editor',
-  avatar_initials text,
-  active boolean DEFAULT true,
+  email text UNIQUE NOT NULL,
+  password text NOT NULL,
+  role text NOT NULL CHECK (role IN ('admin', 'finance', 'editor')),
+  can_view_social boolean DEFAULT false,
+  can_view_finances boolean DEFAULT false,
+  can_manage_bots boolean DEFAULT false,
+  can_edit_portfolio boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -72,10 +74,9 @@ ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Allow all for app_users" ON app_users;
 CREATE POLICY "Allow all for app_users" ON app_users FOR ALL USING (true) WITH CHECK (true);
 
-INSERT INTO app_users (name, email, password_hash, role, avatar_initials) VALUES
-  ('João Lucas', 'joaolucas@catarsefilm.com', 'catarse2026', 'admin', 'JL'),
-  ('Ana Clara', 'anaclara@catarsefilm.com', 'editor2026', 'editor', 'AC'),
-  ('Pedro Henrique', 'pedro@catarsefilm.com', 'viewer2026', 'viewer', 'PH')
+INSERT INTO app_users (name, email, password, role, can_view_social, can_view_finances, can_manage_bots, can_edit_portfolio) VALUES
+  ('João Lucas', 'joaolucas@catarsefilm.com', '060783', 'admin', true, true, true, true),
+  ('Samuel', 'samuel@catarsefilm.com', '123456', 'editor', false, false, false, true)
 ON CONFLICT (email) DO NOTHING;
 
 -- 5. Tabela RECEIVED_EMAILS

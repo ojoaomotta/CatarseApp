@@ -15,31 +15,6 @@ export default function Login({ onLogin }: LoginProps) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleDemoLogin = (role: "admin" | "finance" | "editor") => {
-    if (role === "admin") {
-      onLogin("João Lucas", "admin", {
-        can_view_social: true,
-        can_view_finances: true,
-        can_manage_bots: true,
-        can_edit_portfolio: true,
-      });
-    } else if (role === "finance") {
-      onLogin("Ana Clara", "finance", {
-        can_view_social: false,
-        can_view_finances: true,
-        can_manage_bots: false,
-        can_edit_portfolio: false,
-      });
-    } else if (role === "editor") {
-      onLogin("Pedro Santos", "editor", {
-        can_view_social: false,
-        can_view_finances: false,
-        can_manage_bots: false,
-        can_edit_portfolio: true,
-      });
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -48,15 +23,14 @@ export default function Login({ onLogin }: LoginProps) {
     }
 
     try {
-      // 1. Tentar login real na tabela app_users do Supabase
-      const { data, error } = await supabase
+      const { data, error: sbError } = await supabase
         .from("app_users")
         .select("*")
         .eq("email", email)
         .eq("password", password)
         .single();
 
-      if (!error && data) {
+      if (!sbError && data) {
         onLogin(data.name, data.role as any, {
           can_view_social: data.can_view_social !== false,
           can_view_finances: data.can_view_finances !== false,
@@ -64,20 +38,11 @@ export default function Login({ onLogin }: LoginProps) {
           can_edit_portfolio: data.can_edit_portfolio !== false,
         });
         return;
+      } else {
+        setError("E-mail ou senha incorretos.");
       }
-    } catch (err) {
-      console.warn("Real login fallback: ", err);
-    }
-
-    // 2. Fallback offline
-    if (email === "admin@catarse.com" && password === "admin123") {
-      handleDemoLogin("admin");
-    } else if (email === "financeiro@catarse.com" && password === "financeiro123") {
-      handleDemoLogin("finance");
-    } else if (email === "editor@catarse.com" && password === "editor123") {
-      handleDemoLogin("editor");
-    } else {
-      setError("Credenciais inválidas. Use os botões de acesso rápido ou crie a tabela 'app_users' no Supabase.");
+    } catch (err: any) {
+      setError("Erro ao conectar ao banco de dados: " + err.message);
     }
   };
 
@@ -98,7 +63,7 @@ export default function Login({ onLogin }: LoginProps) {
             <label style={styles.label}>E-mail</label>
             <input
               type="email"
-              placeholder="exemplo@catarse.com"
+              placeholder="exemplo@catarsefilm.com"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setError(""); }}
               style={styles.input}
@@ -120,36 +85,6 @@ export default function Login({ onLogin }: LoginProps) {
             Entrar no Estúdio
           </button>
         </form>
-
-        <div style={styles.divider}>
-          <span style={styles.dividerLine}></span>
-          <span style={styles.dividerText}>Acesso Rápido (Demonstração)</span>
-          <span style={styles.dividerLine}></span>
-        </div>
-
-        <div style={styles.demoButtons}>
-          <button 
-            onClick={() => handleDemoLogin("admin")} 
-            className="btn-secondary" 
-            style={styles.demoBtn}
-          >
-            Administrador
-          </button>
-          <button 
-            onClick={() => handleDemoLogin("finance")} 
-            className="btn-secondary" 
-            style={styles.demoBtn}
-          >
-            Financeiro
-          </button>
-          <button 
-            onClick={() => handleDemoLogin("editor")} 
-            className="btn-secondary" 
-            style={styles.demoBtn}
-          >
-            Editor
-          </button>
-        </div>
       </div>
     </div>
   );
