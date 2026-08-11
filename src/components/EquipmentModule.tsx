@@ -22,7 +22,7 @@ interface EquipmentLog {
 
 interface UserProfile {
   username: string;
-  role: "admin" | "finance" | "editor";
+  role: "admin" | "finance" | "editor" | "client";
 }
 
 interface EquipmentModuleProps {
