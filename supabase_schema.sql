@@ -34,7 +34,9 @@ INSERT INTO app_users (name, email, password, role, can_view_social, can_view_fi
 VALUES ('Ana Clara', 'financeiro@catarse.com', 'financeiro123', 'finance', false, true, false, false)
 ON CONFLICT (email) DO NOTHING;
 
--- Inserir Editor de Vídeo padrão (Pedro Santos)
-INSERT INTO app_users (name, email, password, role, can_view_social, can_view_finances, can_manage_bots, can_edit_portfolio)
-VALUES ('Pedro Santos', 'editor@catarse.com', 'editor123', 'editor', false, false, false, true)
-ON CONFLICT (email) DO NOTHING;
+-- Migração para atualização da tabela clients (suporte a fotos e habilitação de entregas)
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS has_films boolean DEFAULT true;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS has_photos boolean DEFAULT true;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS photos jsonb DEFAULT '[]'::jsonb;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS favorite_photo_ids jsonb DEFAULT '[]'::jsonb;
+

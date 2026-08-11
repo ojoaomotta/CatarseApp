@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784338398.3160152,
-    "ast_hash": "911307c110d8f5f9096d350c51fccbb3",
+    "mtime": 1784337342.503701,
+    "ast_hash": "39eb1d89449af1a8d16f5f1baa98da6c",
     "semantic_hash": ""
   },
   "prompt-optimizer-ext/content.js": {
@@ -65,13 +65,13 @@
     "semantic_hash": ""
   },
   "src-tauri/tauri.conf.json": {
-    "mtime": 1784338405.2054312,
-    "ast_hash": "c178857f8fb85786bd74b81313e2f88a",
+    "mtime": 1784337348.1304975,
+    "ast_hash": "acc6db8cc592a9683fe1550513ae34d0",
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1786418441.81293,
-    "ast_hash": "ffb59a86b45cba6e3029f2b4afc8a81d",
+    "mtime": 1784336502.043734,
+    "ast_hash": "663c1bde3d9c75f3ab1c0ff0889c2e50",
     "semantic_hash": ""
   },
   "src/components/AdminModule.tsx": {
@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "src/components/CMSModule.tsx": {
-    "mtime": 1786418397.9807858,
-    "ast_hash": "8ed8ca6e813fdf049d1cd1a1086fb25f",
+    "mtime": 1784143965.4641042,
+    "ast_hash": "aad633b5861bda112ac07448b65c3154",
     "semantic_hash": ""
   },
   "src/components/Dashboard.tsx": {
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "src/components/Login.tsx": {
-    "mtime": 1786418422.3667572,
-    "ast_hash": "65d2c9a375872c170889579c79fa0b17",
+    "mtime": 1784335455.3017342,
+    "ast_hash": "2790f294deaa5b3c1a2e992f4af898a4",
     "semantic_hash": ""
   },
   "src/components/SocialModule.tsx": {
@@ -135,13 +135,13 @@
     "semantic_hash": ""
   },
   "supabase_recovery.sql": {
-    "mtime": 1786418335.1132638,
-    "ast_hash": "b35e12ebd3189bd765c1497869ad9e9f",
+    "mtime": 1784332942.2855833,
+    "ast_hash": "c8a61dbd909ef79b4b254e60bce1d397",
     "semantic_hash": ""
   },
   "supabase_schema.sql": {
-    "mtime": 1786418319.9468436,
-    "ast_hash": "2bd7ccacd1d25239009e24cac6d5fe4d",
+    "mtime": 1784144396.084352,
+    "ast_hash": "d6a818105b77b6a7c0d8ccd84d976e9d",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -467,16 +467,6 @@
   "rounded_logo.png": {
     "mtime": 1784331389.4348843,
     "ast_hash": "38199397f4160cff4af33f3266c2d5af",
-    "semantic_hash": ""
-  },
-  "scripts/catarse_r2_uploader.py": {
-    "mtime": 1786418452.03313,
-    "ast_hash": "be47ca4023439a5e933d834f2cbd90e6",
-    "semantic_hash": ""
-  },
-  "src/components/ClientGalleryModule.tsx": {
-    "mtime": 1786418369.8529968,
-    "ast_hash": "f0756fcf7311a1e30687c19f309e92f9",
     "semantic_hash": ""
   }
 }

@@ -464,76 +464,6 @@
       "norm_label": "updatebudgetui()"
     },
     {
-      "label": "catarse_r2_uploader.py",
-      "file_type": "code",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader",
-      "community": 24,
-      "norm_label": "catarse_r2_uploader.py"
-    },
-    {
-      "label": "parse_args()",
-      "file_type": "code",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader_parse_args",
-      "community": 24,
-      "norm_label": "parse_args()"
-    },
-    {
-      "label": "encode_file_to_data_url()",
-      "file_type": "code",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader_encode_file_to_data_url",
-      "community": 24,
-      "norm_label": "encode_file_to_data_url()"
-    },
-    {
-      "label": "fetch_client_record()",
-      "file_type": "code",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L49",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader_fetch_client_record",
-      "community": 24,
-      "norm_label": "fetch_client_record()"
-    },
-    {
-      "label": "update_client_photos()",
-      "file_type": "code",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L64",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader_update_client_photos",
-      "community": 24,
-      "norm_label": "update_client_photos()"
-    },
-    {
-      "label": "main()",
-      "file_type": "code",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L81",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader_main",
-      "community": 24,
-      "norm_label": "main()"
-    },
-    {
-      "label": "L\u00ea o arquivo de imagem e converte para Data URL comprimida para preview r\u00e1pido.",
-      "file_type": "rationale",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L35",
-      "_origin": "ast",
-      "id": "scripts_catarse_r2_uploader_rationale_35",
-      "community": 24,
-      "norm_label": "le o arquivo de imagem e converte para data url comprimida para preview rapido."
-    },
-    {
       "label": "build.rs",
       "file_type": "code",
       "source_file": "src-tauri/build.rs",
@@ -2317,7 +2247,7 @@
       "label": "UserProfile",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L17",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "src_app_userprofile",
       "community": 0,
@@ -2327,7 +2257,7 @@
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L29",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 0,
@@ -2360,117 +2290,47 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_cmsmodule",
-      "community": 23,
+      "community": 0,
       "norm_label": "cmsmodule.tsx"
     },
     {
       "label": "FragmentItem",
       "file_type": "code",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L5",
+      "source_location": "L4",
       "_origin": "ast",
       "id": "src_components_cmsmodule_fragmentitem",
-      "community": 23,
+      "community": 0,
       "norm_label": "fragmentitem"
     },
     {
       "label": "ClientProject",
       "file_type": "code",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_cmsmodule_clientproject",
-      "community": 23,
+      "community": 0,
       "norm_label": "clientproject"
     },
     {
       "label": "CMSModule()",
       "file_type": "code",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L34",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "src_components_cmsmodule_cmsmodule",
-      "community": 23,
+      "community": 0,
       "norm_label": "cmsmodule()"
     },
     {
       "label": "styles",
       "file_type": "code",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L1088",
+      "source_location": "L746",
       "_origin": "ast",
       "id": "src_components_cmsmodule_styles",
-      "community": 23,
-      "norm_label": "styles"
-    },
-    {
-      "label": "ClientGalleryModule.tsx",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule",
-      "community": 23,
-      "norm_label": "clientgallerymodule.tsx"
-    },
-    {
-      "label": "PhotoItem",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule_photoitem",
-      "community": 23,
-      "norm_label": "photoitem"
-    },
-    {
-      "label": "FragmentItem",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule_fragmentitem",
-      "community": 23,
-      "norm_label": "fragmentitem"
-    },
-    {
-      "label": "ClientProjectData",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule_clientprojectdata",
-      "community": 23,
-      "norm_label": "clientprojectdata"
-    },
-    {
-      "label": "ClientGalleryModuleProps",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule_clientgallerymoduleprops",
-      "community": 23,
-      "norm_label": "clientgallerymoduleprops"
-    },
-    {
-      "label": "ClientGalleryModule()",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule_clientgallerymodule",
-      "community": 23,
-      "norm_label": "clientgallerymodule()"
-    },
-    {
-      "label": "styles",
-      "file_type": "code",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L638",
-      "_origin": "ast",
-      "id": "src_components_clientgallerymodule_styles",
-      "community": 23,
+      "community": 0,
       "norm_label": "styles"
     },
     {
@@ -2620,7 +2480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_financemodule",
-      "community": 0,
+      "community": 23,
       "norm_label": "financemodule.tsx"
     },
     {
@@ -2630,7 +2490,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_financemodule_transactionrow",
-      "community": 0,
+      "community": 23,
       "norm_label": "transactionrow"
     },
     {
@@ -2640,7 +2500,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_financemodule_financemodule",
-      "community": 0,
+      "community": 23,
       "norm_label": "financemodule()"
     },
     {
@@ -2650,7 +2510,7 @@
       "source_location": "L508",
       "_origin": "ast",
       "id": "src_components_financemodule_styles",
-      "community": 0,
+      "community": 23,
       "norm_label": "styles"
     },
     {
@@ -2677,7 +2537,7 @@
       "label": "SavedUser",
       "file_type": "code",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L18",
+      "source_location": "L13",
       "_origin": "ast",
       "id": "src_components_login_saveduser",
       "community": 0,
@@ -2687,7 +2547,7 @@
       "label": "Login()",
       "file_type": "code",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L24",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_login_login",
       "community": 0,
@@ -2697,7 +2557,7 @@
       "label": "styles",
       "file_type": "code",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L219",
+      "source_location": "L161",
       "_origin": "ast",
       "id": "src_components_login_styles",
       "community": 0,
@@ -3665,110 +3525,6 @@
       "weight": 1.0,
       "source": "prompt_optimizer_ext_popup_renderhistory",
       "target": "prompt_optimizer_ext_popup_updatecounters",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader",
-      "target": "scripts_catarse_r2_uploader_encode_file_to_data_url",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L49",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader",
-      "target": "scripts_catarse_r2_uploader_fetch_client_record",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L81",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader",
-      "target": "scripts_catarse_r2_uploader_main",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L27",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader",
-      "target": "scripts_catarse_r2_uploader_parse_args",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L64",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader",
-      "target": "scripts_catarse_r2_uploader_update_client_photos",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L82",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader_main",
-      "target": "scripts_catarse_r2_uploader_parse_args",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L121",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader_main",
-      "target": "scripts_catarse_r2_uploader_encode_file_to_data_url",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L35",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader_rationale_35",
-      "target": "scripts_catarse_r2_uploader_encode_file_to_data_url",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L90",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader_main",
-      "target": "scripts_catarse_r2_uploader_fetch_client_record",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/catarse_r2_uploader.py",
-      "source_location": "L136",
-      "weight": 1.0,
-      "source": "scripts_catarse_r2_uploader_main",
-      "target": "scripts_catarse_r2_uploader_update_client_photos",
       "confidence_score": 1.0
     },
     {
@@ -5556,7 +5312,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L29",
+      "source_location": "L26",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_app",
@@ -5566,7 +5322,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L17",
+      "source_location": "L15",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_userprofile",
@@ -5581,17 +5337,6 @@
       "weight": 1.0,
       "source": "src_app",
       "target": "src_components_adminmodule",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_components_clientgallerymodule",
       "confidence_score": 1.0
     },
     {
@@ -5697,28 +5442,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L14",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_lib_supabase",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L14",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_lib_supabase_supabase",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/main.tsx",
       "source_location": "L3",
       "weight": 1.0,
@@ -5759,32 +5482,10 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_components_cmsmodule",
-      "target": "src_components_clientgallerymodule",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_components_cmsmodule",
-      "target": "src_components_clientgallerymodule_photoitem",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0,
       "source": "src_components_cmsmodule",
       "target": "src_components_cmsmodule_clientproject",
@@ -5794,7 +5495,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L34",
+      "source_location": "L29",
       "weight": 1.0,
       "source": "src_components_cmsmodule",
       "target": "src_components_cmsmodule_cmsmodule",
@@ -5804,7 +5505,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L5",
+      "source_location": "L4",
       "weight": 1.0,
       "source": "src_components_cmsmodule",
       "target": "src_components_cmsmodule_fragmentitem",
@@ -5814,7 +5515,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L1088",
+      "source_location": "L746",
       "weight": 1.0,
       "source": "src_components_cmsmodule",
       "target": "src_components_cmsmodule_styles",
@@ -5840,77 +5541,6 @@
       "weight": 1.0,
       "source": "src_components_cmsmodule",
       "target": "src_lib_supabase_supabase",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "field",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/CMSModule.tsx",
-      "source_location": "L22",
-      "weight": 1.0,
-      "source": "src_components_cmsmodule_clientproject",
-      "target": "src_components_clientgallerymodule_photoitem",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L47",
-      "weight": 1.0,
-      "source": "src_components_clientgallerymodule",
-      "target": "src_components_clientgallerymodule_clientgallerymodule",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L40",
-      "weight": 1.0,
-      "source": "src_components_clientgallerymodule",
-      "target": "src_components_clientgallerymodule_clientgallerymoduleprops",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L19",
-      "weight": 1.0,
-      "source": "src_components_clientgallerymodule",
-      "target": "src_components_clientgallerymodule_clientprojectdata",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "src_components_clientgallerymodule",
-      "target": "src_components_clientgallerymodule_fragmentitem",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_components_clientgallerymodule",
-      "target": "src_components_clientgallerymodule_photoitem",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/ClientGalleryModule.tsx",
-      "source_location": "L638",
-      "weight": 1.0,
-      "source": "src_components_clientgallerymodule",
-      "target": "src_components_clientgallerymodule_styles",
       "confidence_score": 1.0
     },
     {
@@ -6101,7 +5731,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L24",
+      "source_location": "L18",
       "weight": 1.0,
       "source": "src_components_login",
       "target": "src_components_login_login",
@@ -6121,7 +5751,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L18",
+      "source_location": "L13",
       "weight": 1.0,
       "source": "src_components_login",
       "target": "src_components_login_saveduser",
@@ -6131,7 +5761,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Login.tsx",
-      "source_location": "L219",
+      "source_location": "L161",
       "weight": 1.0,
       "source": "src_components_login",
       "target": "src_components_login_styles",
@@ -6591,5 +6221,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0aa997ba942a6d09ff54348f9a436b39a78f0646"
+  "built_at_commit": "c473d0dce2966006c8960ecc5de83a1b2fa0d046"
 }

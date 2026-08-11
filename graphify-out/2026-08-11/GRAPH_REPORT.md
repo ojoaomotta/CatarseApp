@@ -1,16 +1,16 @@
-# Graph Report - Catarse App  (2026-08-11)
+# Graph Report - Catarse App  (2026-07-17)
 
 ## Corpus Check
-- 40 files · ~91,743 words
+- 38 files · ~86,661 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 323 nodes · 332 edges · 25 communities (21 shown, 4 thin omitted)
+- 309 nodes · 310 edges · 24 communities (19 shown, 5 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0aa997ba`
+- Built from commit: `c473d0dc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,32 +34,30 @@
 - popup.js
 - Tauri + React + Typescript
 - FinanceModule.tsx
-- catarse_r2_uploader.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 16 edges
 2. `definitions` - 9 edges
 3. `definitions` - 9 edges
-4. `supabase` - 7 edges
+4. `supabase` - 6 edges
 5. `compilerOptions` - 6 edges
 6. `scripts` - 5 edges
-7. `main()` - 5 edges
-8. `Capability` - 5 edges
-9. `permissions` - 5 edges
-10. `CapabilityRemote` - 5 edges
+7. `Capability` - 5 edges
+8. `permissions` - 5 edges
+9. `CapabilityRemote` - 5 edges
+10. `Capability` - 5 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `ClientProject` --references--> `PhotoItem`  [EXTRACTED]
-  src/components/CMSModule.tsx → src/components/ClientGalleryModule.tsx
+- None detected - all connections are within the same source files.
 
 ## Import Cycles
 - None detected.
 
-## Communities (25 total, 4 thin omitted)
+## Communities (24 total, 5 thin omitted)
 
 ### Community 0 - "App.tsx"
 Cohesion: 0.07
-Nodes (19): UserProfile, TeamMember, Dashboard(), DashboardProps, styles, styles, Equipment, EquipmentLog (+11 more)
+Nodes (20): UserProfile, TeamMember, ClientProject, FragmentItem, styles, Dashboard(), DashboardProps, styles (+12 more)
 
 ### Community 1 - "properties"
 Cohesion: 0.07
@@ -113,32 +111,24 @@ Nodes (7): compilerOptions, allowSyntheticDefaultImports, composite, module, mod
 Cohesion: 0.33
 Nodes (5): description, identifier, permissions, $schema, windows
 
-### Community 23 - "FinanceModule.tsx"
-Cohesion: 0.20
-Nodes (8): ClientGalleryModuleProps, ClientProjectData, FragmentItem, PhotoItem, styles, ClientProject, FragmentItem, styles
-
-### Community 24 - "catarse_r2_uploader.py"
-Cohesion: 0.48
-Nodes (6): encode_file_to_data_url(), fetch_client_record(), main(), parse_args(), Lê o arquivo de imagem e converte para Data URL comprimida para preview rápido., update_client_photos()
-
 ## Knowledge Gaps
-- **187 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+182 more)
+- **184 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+179 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `properties` connect `properties` to `CapabilityRemote`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `properties` connect `properties` to `CapabilityRemote`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `definitions` connect `definitions` to `properties`, `CapabilityRemote`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _188 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _184 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06906906906906907 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06685633001422475 - nodes in this community are weakly interconnected._
 - **Should `properties` be split into smaller, more focused modules?**
   _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
 - **Should `properties` be split into smaller, more focused modules?**

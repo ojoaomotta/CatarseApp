@@ -2,17 +2,23 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
 interface LoginProps {
-  onLogin: (username: string, role: "admin" | "finance" | "editor", permissions: {
-    can_view_social: boolean;
-    can_view_finances: boolean;
-    can_manage_bots: boolean;
-    can_edit_portfolio: boolean;
-  }) => void;
+  onLogin: (
+    username: string,
+    role: "admin" | "finance" | "editor" | "client",
+    permissions: {
+      can_view_social: boolean;
+      can_view_finances: boolean;
+      can_manage_bots: boolean;
+      can_edit_portfolio: boolean;
+    },
+    clientProjectData?: any
+  ) => void;
 }
 
 interface SavedUser {
   email: string;
   name: string;
+  role?: string;
 }
 
 export default function Login({ onLogin }: LoginProps) {
@@ -38,8 +44,8 @@ export default function Login({ onLogin }: LoginProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Resolve email to use: either the input or the saved user's email
-    const loginEmail = savedUser ? savedUser.email : email;
+    // Resolve email/username to use
+    const loginEmail = savedUser ? savedUser.email : email.trim();
 
     if (!loginEmail || !password) {
       setError("Por favor, preencha todos os campos.");
@@ -47,6 +53,7 @@ export default function Login({ onLogin }: LoginProps) {
     }
 
     try {
+      // 1. Try staff login in app_users
       const { data, error: sbError } = await supabase
         .from("app_users")
         .select("*")
@@ -55,10 +62,9 @@ export default function Login({ onLogin }: LoginProps) {
         .single();
 
       if (!sbError && data) {
-        // Save user to localStorage for the next session
         localStorage.setItem(
           "catarse_remembered_user",
-          JSON.stringify({ email: data.email, name: data.name })
+          JSON.stringify({ email: data.email, name: data.name, role: data.role })
         );
 
         onLogin(data.name, data.role as any, {
@@ -68,9 +74,61 @@ export default function Login({ onLogin }: LoginProps) {
           can_edit_portfolio: data.can_edit_portfolio !== false,
         });
         return;
-      } else {
-        setError("Senha ou e-mail incorretos.");
       }
+
+      // 2. Try Client login in clients table (by username or name match)
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .or(`username.eq.${loginEmail},name.ilike.%${loginEmail}%`)
+        .eq("password", password)
+        .maybeSingle();
+
+      if (!clientError && clientData) {
+        localStorage.setItem(
+          "catarse_remembered_user",
+          JSON.stringify({ email: clientData.username || clientData.name, name: clientData.name, role: "client" })
+        );
+
+        const parseJson = (val: any) => {
+          if (val === null || val === undefined) return [];
+          if (typeof val === "string") {
+            try { return JSON.parse(val); } catch { return []; }
+          }
+          return val;
+        };
+
+        const mappedProject = {
+          id: clientData.id,
+          coupleName: clientData.name,
+          genre: clientData.project_name || "Catarse Film",
+          eventDate: clientData.event_date || "",
+          stage: clientData.status || "Contrato",
+          hasFilms: clientData.has_films !== false,
+          hasPhotos: clientData.has_photos !== false,
+          briefingEnabled: clientData.briefing_enabled !== false,
+          extrasEnabled: clientData.extras_enabled !== false,
+          extrasUnlocked: clientData.extras_unlocked || false,
+          r2VideoKey: clientData.video_url || "",
+          downloadKey: clientData.download_url || "",
+          posterUrl: clientData.video_cover || "",
+          contractUrl: clientData.contract_url || "",
+          questions: parseJson(clientData.briefing_questions),
+          fragments: parseJson(clientData.extras),
+          photos: parseJson(clientData.photos),
+          favoritePhotoIds: parseJson(clientData.favorite_photo_ids)
+        };
+
+        onLogin(clientData.name, "client", {
+          can_view_social: false,
+          can_view_finances: false,
+          can_manage_bots: false,
+          can_edit_portfolio: false,
+        }, mappedProject);
+        return;
+      }
+
+      setError("Usuário, e-mail ou senha incorretos.");
     } catch (err: any) {
       setError("Erro ao conectar ao banco de dados: " + err.message);
     }
@@ -90,8 +148,8 @@ export default function Login({ onLogin }: LoginProps) {
       
       <div style={styles.loginCard} className="glass-panel gold-glow">
         <div style={styles.header}>
-          <h1 style={styles.title}>Catarse Film</h1>
-          <span style={styles.subtitle} className="tracking-wider">Central de Controle</span>
+          <h1 style={styles.title}>Catarse</h1>
+          <span style={styles.subtitle} className="tracking-wider">Central & Portal de Clientes</span>
         </div>
 
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -112,12 +170,12 @@ export default function Login({ onLogin }: LoginProps) {
               </div>
             </div>
           ) : (
-            /* Default Email Input UI */
+            /* Default Email/Username Input UI */
             <div style={styles.inputGroup}>
-              <label style={styles.label}>E-mail</label>
+              <label style={styles.label}>E-mail ou Usuário de Acesso</label>
               <input
-                type="email"
-                placeholder="exemplo@catarsefilm.com"
+                type="text"
+                placeholder="exemplo@catarsefilm.com ou codigo_cliente"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 style={styles.input}
@@ -127,7 +185,7 @@ export default function Login({ onLogin }: LoginProps) {
 
           {/* Password Input (Shown in both flows) */}
           <div style={styles.inputGroup}>
-            <label style={styles.label}>Senha</label>
+            <label style={styles.label}>Senha de Acesso</label>
             <input
               type="password"
               placeholder="••••••••"
@@ -139,7 +197,7 @@ export default function Login({ onLogin }: LoginProps) {
           </div>
 
           <button type="submit" className="btn-primary" style={styles.button}>
-            Entrar no Estúdio
+            Acessar Portal / Estúdio
           </button>
         </form>
 
@@ -149,7 +207,7 @@ export default function Login({ onLogin }: LoginProps) {
               onClick={handleClearSavedUser}
               style={styles.switchAccountBtn}
             >
-              Entrar em uma conta diferente
+              🔄 Entrar com outra conta
             </button>
           </div>
         )}
@@ -160,45 +218,46 @@ export default function Login({ onLogin }: LoginProps) {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
     minHeight: "100vh",
     width: "100vw",
-    backgroundColor: "var(--bg-moss)",
-    padding: "1rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "var(--bg-black)",
+    position: "relative",
+    overflow: "hidden",
   },
   loginCard: {
-    width: "100%",
-    maxWidth: "420px",
-    padding: "3rem 2.5rem",
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    gap: "1.5rem",
+    width: "90%",
+    maxWidth: "400px",
+    padding: "2.5rem 2rem",
+    borderRadius: "16px",
+    backgroundColor: "var(--bg-moss)",
+    border: "1px solid var(--accent-gold-border)",
+    position: "relative",
+    zIndex: 10,
   },
   header: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.25rem",
-    marginBottom: "1rem",
+    textAlign: "center",
+    marginBottom: "2rem",
   },
   title: {
-    fontSize: "2.5rem",
-    color: "var(--text-cream)",
+    fontFamily: "var(--font-serif)",
+    fontSize: "2.2rem",
+    color: "var(--accent-gold)",
     margin: 0,
+    fontWeight: 700,
   },
   subtitle: {
-    fontSize: "0.7rem",
+    fontSize: "0.72rem",
+    color: "var(--text-cream-dim)",
     textTransform: "uppercase",
-    color: "var(--accent-gold)",
-    fontWeight: 600,
+    letterSpacing: "0.15em",
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "1.25rem",
-    textAlign: "left",
+    gap: "1.2rem",
   },
   inputGroup: {
     display: "flex",
@@ -208,54 +267,57 @@ const styles: { [key: string]: React.CSSProperties } = {
   label: {
     fontSize: "0.75rem",
     color: "var(--text-cream-dim)",
-    fontWeight: 600,
+    fontWeight: 500,
   },
   input: {
-    backgroundColor: "var(--bg-moss)",
-    border: "1px solid var(--glass-border)",
+    backgroundColor: "var(--input-bg)",
+    border: "1px solid var(--input-border)",
     borderRadius: "8px",
-    padding: "0.75rem 1rem",
+    padding: "0.75rem",
     color: "var(--text-cream)",
-    fontSize: "0.85rem",
+    fontSize: "0.9rem",
     outline: "none",
+    transition: "var(--transition-smooth)",
   },
   button: {
     padding: "0.85rem",
-    fontSize: "0.85rem",
+    borderRadius: "8px",
+    fontSize: "0.9rem",
     fontWeight: 600,
     marginTop: "0.5rem",
-  },
-  error: {
-    backgroundColor: "rgba(224, 107, 107, 0.15)",
-    border: "1px solid rgba(224, 107, 107, 0.3)",
-    borderRadius: "8px",
-    color: "#e06b6b",
-    fontSize: "0.8rem",
-    padding: "0.75rem 1rem",
-    textAlign: "center",
+    cursor: "pointer",
   },
   avatar: {
-    width: "64px",
-    height: "64px",
+    width: "56px",
+    height: "56px",
     borderRadius: "50%",
-    border: "2px solid var(--accent-gold-border)",
     backgroundColor: "var(--accent-gold-dim)",
+    border: "1px solid var(--accent-gold-border)",
     color: "var(--accent-gold)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "1.5rem",
+    fontSize: "1.2rem",
     fontWeight: 700,
-    margin: "0 auto 0.5rem",
+    margin: "0 auto",
   },
   switchAccountBtn: {
     background: "none",
     border: "none",
-    color: "var(--text-cream-dark)",
+    color: "var(--accent-gold)",
     fontSize: "0.75rem",
     cursor: "pointer",
-    textDecoration: "underline",
-    padding: "0.25rem",
-    transition: "color 0.2s",
-  }
+    width: "100%",
+    textAlign: "center",
+    padding: "0.5rem",
+  },
+  error: {
+    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    border: "1px solid rgba(239, 68, 68, 0.3)",
+    color: "#f87171",
+    fontSize: "0.8rem",
+    padding: "0.6rem",
+    borderRadius: "6px",
+    textAlign: "center",
+  },
 };

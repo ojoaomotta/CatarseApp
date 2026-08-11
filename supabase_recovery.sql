@@ -20,8 +20,18 @@ CREATE TABLE IF NOT EXISTS clients (
   extras jsonb DEFAULT '[]'::jsonb,
   extras_unlocked boolean DEFAULT false,
   extras_enabled boolean DEFAULT true,
+  has_films boolean DEFAULT true,
+  has_photos boolean DEFAULT true,
+  photos jsonb DEFAULT '[]'::jsonb,
+  favorite_photo_ids jsonb DEFAULT '[]'::jsonb,
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS has_films boolean DEFAULT true;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS has_photos boolean DEFAULT true;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS photos jsonb DEFAULT '[]'::jsonb;
+ALTER TABLE clients ADD COLUMN IF NOT EXISTS favorite_photo_ids jsonb DEFAULT '[]'::jsonb;
+
 
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Allow all for clients" ON clients;

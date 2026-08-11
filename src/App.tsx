@@ -8,19 +8,22 @@ import CMSModule from "./components/CMSModule";
 import AdminModule from "./components/AdminModule";
 import EmailModule from "./components/EmailModule";
 import EquipmentModule from "./components/EquipmentModule";
+import ClientGalleryModule from "./components/ClientGalleryModule";
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { supabase } from "./lib/supabase";
 import "./App.css";
 
 interface UserProfile {
   username: string;
-  role: "admin" | "finance" | "editor";
+  role: "admin" | "finance" | "editor" | "client";
   permissions: {
     can_view_social: boolean;
     can_view_finances: boolean;
     can_manage_bots: boolean;
     can_edit_portfolio: boolean;
   };
+  clientProject?: any;
 }
 
 export default function App() {
@@ -145,11 +148,12 @@ export default function App() {
 
   const handleLogin = (
     username: string,
-    role: "admin" | "finance" | "editor",
-    permissions: UserProfile["permissions"]
+    role: "admin" | "finance" | "editor" | "client",
+    permissions: UserProfile["permissions"],
+    clientProject?: any
   ) => {
-    setUser({ username, role, permissions });
-    setActiveTab("dashboard");
+    setUser({ username, role, permissions, clientProject });
+    setActiveTab(role === "client" ? "client_portal" : "dashboard");
     setTimeout(playChime, 100);
   };
 
@@ -168,8 +172,46 @@ export default function App() {
     setTheme(nextTheme);
   };
 
+  const handleUpdateFavoritesInSupabase = async (favoriteIds: string[]) => {
+    if (!user || !user.clientProject) return;
+    try {
+      await supabase
+        .from("clients")
+        .update({ favorite_photo_ids: favoriteIds })
+        .eq("id", user.clientProject.id);
+    } catch (err) {
+      console.error("Erro ao atualizar favoritos:", err);
+    }
+  };
+
   if (!user) {
     return <Login onLogin={handleLogin} />;
+  }
+
+  // Client Role Full Screen View
+  if (user.role === "client" && user.clientProject) {
+    return (
+      <div className={`app-layout theme-${theme}`} style={{ padding: "2rem" }}>
+        <header className="app-header" style={{ marginBottom: "1.5rem" }}>
+          <a href="#" className="header-branding">
+            <span className="header-logo">catarse</span>
+            <span className="header-logo-badge">| PORTAL DO CLIENTE</span>
+          </a>
+          <div className="header-actions-right">
+            <button onClick={handleLogout} className="header-logout-btn">
+              Sair
+            </button>
+          </div>
+        </header>
+
+        <main className="main-content">
+          <ClientGalleryModule
+            project={user.clientProject}
+            onUpdateFavorites={handleUpdateFavoritesInSupabase}
+          />
+        </main>
+      </div>
+    );
   }
 
   const navItems = [
@@ -214,7 +256,7 @@ export default function App() {
 
   return (
     <div className={`app-layout theme-${theme}`}>
-      {/* DESKTOP APP HEADER (Horizontal Pills control + Theme Switcher) */}
+      {/* DESKTOP APP HEADER */}
       <header className="app-header">
         <a href="#" className="header-branding" onClick={() => handleTabChange("dashboard")}>
           <span className="header-logo">catarse</span>
@@ -240,7 +282,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* MOBILE HEADER BAR (Fallback for narrow screens) */}
+      {/* MOBILE HEADER BAR */}
       <header className="mobile-header">
         <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
           ☰
