@@ -51,3 +51,11 @@ A chave configurada apenas no arquivo privado local foi aceita na listagem dos m
 A estrutura Tauri existente e o workflow de Releases continuam no repositório. Este commit não produz um instalador novo e não muda o aplicativo legado. Para o Mac, a próxima etapa é conectar a nova interface, gerar instaladores assinados, publicar o manifesto de atualização e validar atualização entre duas versões. No iPhone, a distribuição nativa precisa de assinatura Apple e App Store/TestFlight; não se instala um app iOS comum pelo mesmo arquivo de release do Mac. Enquanto isso, o site responsivo poderá ser acessado pelo Safari após a configuração online.
 
 Referências: [Vercel Build Output API](https://vercel.com/docs/build-output-api), [transações PostgreSQL](https://node-postgres.com/features/transactions), [Gemini structured outputs](https://ai.google.dev/gemini-api/docs/structured-output).
+
+## Ativação realizada
+
+O projeto `catarse-app` foi publicado em https://catarse-app.vercel.app e vinculado ao GitHub. Foi feito um backup PostgreSQL completo em formato custom antes da criação do schema financeiro. O arquivo foi validado com `pg_restore --list` e extração integral para saída descartada; não foi feito teste de restauração em outro servidor. Os arquivos privados e o relatório de integridade estão em `.catarse-finance-data/backups/`, fora do Git.
+
+Foram criadas oito tabelas em `catarse_finance`. As contagens das 43 tabelas públicas foram comparadas antes/depois e permaneceram iguais. O servidor usa o papel `catarse_finance_server`, com permissões SELECT/INSERT/UPDATE/DELETE e políticas RLS apenas nas tabelas financeiras. Foi verificado que esse papel não tem SELECT em `public.clients`. A senha administrativa não foi enviada ao Vercel.
+
+`CATARSE_DATABASE_CA` contém o certificado oficial do Supabase em base64. O servidor passa esse certificado ao driver mantendo a verificação TLS habilitada. A conexão privada e o certificado foram configurados apenas no ambiente de produção do Vercel. O cadastro do primeiro proprietário requer o código de ativação privado; não existe senha padrão.

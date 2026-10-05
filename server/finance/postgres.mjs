@@ -4,8 +4,8 @@ import { postgresRepository } from './postgres-repository.mjs';
 import { HttpError } from './store.mjs';
 
 // Every query is scoped to a private schema. No runtime DDL or legacy table access.
-export async function createPostgresStore(connectionString, { pool: suppliedPool } = {}) {
-  const pool = suppliedPool || new pg.Pool({ connectionString, max: 2, idleTimeoutMillis: 10000, connectionTimeoutMillis: 8000, ssl: { rejectUnauthorized: true } });
+export async function createPostgresStore(connectionString, { pool: suppliedPool, ca = process.env.CATARSE_DATABASE_CA ? Buffer.from(process.env.CATARSE_DATABASE_CA, 'base64').toString('utf8') : undefined } = {}) {
+  const pool = suppliedPool || new pg.Pool({ connectionString, max: 2, idleTimeoutMillis: 10000, connectionTimeoutMillis: 8000, ssl: { rejectUnauthorized: true, ...(ca ? {ca} : {}) } });
   const context = new AsyncLocalStorage();
   const tables = ['users', 'sessions', 'invites', 'workspaces', 'revisions', 'audit', 'ai_usage', 'rate_limits'];
   function sql(text) {
