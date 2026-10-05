@@ -4,10 +4,18 @@
   "version": "0.9.0",
   "type": "module",
   "scripts": {
+    "dev:finance": "node scripts/start-finance.mjs",
+    "server:finance": "node --env-file-if-exists=.env.finance --experimental-strip-types server/finance/start.mjs",
+    "test:server": "node --experimental-strip-types --test tests/finance-server.test.mjs",
+    "build:finance": "tsc && vite build --config vite.finance.config.ts",
+    "preview:finance": "vite preview --config vite.finance.config.ts",
+    "test:finance": "node --experimental-strip-types --test tests/finance.test.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "build:web": "npm run build:finance && node scripts/build-vercel.mjs",
+    "test:cloud": "node --experimental-strip-types --test tests/finance-cloud.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",
@@ -16,16 +24,22 @@
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-updater": "^2.10.1",
     "@types/qrcode": "^1.5.6",
+    "pg": "^8.23.0",
     "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@tauri-apps/cli": "^2",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "esbuild": "^0.28.2",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

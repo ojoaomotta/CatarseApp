@@ -1,0 +1,28 @@
+import { useEffect, useState, type FormEvent } from 'react';
+import { api, type SessionInfo, type User } from './api';
+import type { Scope } from './domain';
+interface Revision { id: string; revision: number; at: string; actor: string }
+export function RemoteSettings({ session, scope, revision, onReload }: { session: SessionInfo; scope: Scope; revision: () => number; onReload: () => void }) {
+  const [revisions, setRevisions] = useState<Revision[]>([]);
+  const [users, setUsers] = useState<(User & { disabled: number })[]>([]);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [restoreId, setRestoreId] = useState('');
+  const [invite, setInvite] = useState('');
+  async function refresh() {
+    try {
+      const result = await api<{ revisions: Revision[] }>(`/revisions?scope=${scope}`); setRevisions(result.revisions);
+      if (session.user?.role === 'owner') setUsers((await api<{ users: (User & { disabled: number })[] }>('/team')).users);
+    } catch (err) { setError((err as Error).message); }
+  }
+  useEffect(() => { void refresh(); }, [scope]);
+  async function run(action: () => Promise<void>) { if (busy) return; setBusy(true); setError(''); setNotice(''); try { await action(); } catch (err) { setError((err as Error).message); } finally { setBusy(false); } }
+  function createInvite(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault(); const form = new FormData(e.currentTarget);
+    void run(async () => { const result = await api<{ token: string }>('/invites', { method: 'POST', csrf: session.csrf, data: { name: form.get('name'), email: form.get('email') } }); setInvite(`${location.origin}/v2.html?convite=${result.token}`); });
+  }
+  return <div className="remote-settings"><section className="panel"><p className="eyebrow">RECUPERAÇÃO</p><h2>Uma revisão antes de cada mudança.</h2><p className="subtle">Cada gravação preserva a versão anterior no servidor. Restaurar cria outra revisão e mantém o histórico. Exporte também seus dados para um local seguro.</p><div className="button-row"><button className="secondary" onClick={() => void refresh()} disabled={busy}>Atualizar lista</button><button className="secondary" onClick={onReload} disabled={busy}>Recarregar dados da central</button>{session.user?.role === 'owner' && session.storage !== 'cloud' && <button className="primary" disabled={busy} onClick={() => void run(async () => { const result = await api<{ filename: string }>('/server-backup', { method: 'POST', csrf: session.csrf }); setNotice(`Cópia completa salva na pasta de backups do servidor: ${result.filename}`); })}>Criar cópia completa do servidor ↓</button>}</div>{revisions.length ? <><label className="field revision-select"><span>Versão anterior do espaço {scope === 'business' ? 'empresarial' : 'pessoal'}</span><select value={restoreId} onChange={e => setRestoreId(e.target.value)}><option value="">Escolha uma revisão</option>{revisions.map(r => <option key={r.id} value={r.id}>Revisão {r.revision} · {new Date(r.at).toLocaleString('pt-BR')} · {r.actor}</option>)}</select></label>{restoreId && <div className="form-note"><p>A revisão escolhida substituirá os registros atuais deste espaço. A versão atual será preservada antes da restauração.</p><button className="secondary" disabled={busy} onClick={() => void run(async () => { await api(`/restore?scope=${scope}`, { method: 'POST', csrf: session.csrf, data: { id: restoreId, revision: revision() } }); onReload(); })}>Confirmar restauração desta revisão</button></div>}</> : <p className="footnote">As revisões aparecerão depois da primeira gravação.</p>}</section>
+  {session.user?.role === 'owner' && <section className="panel"><p className="eyebrow">EQUIPE</p><h2>Acesso com limites claros.</h2><p className="subtle">O convidado poderá consultar e editar o financeiro empresarial. Seus registros pessoais não ficam disponíveis para ele. {session.storage === 'cloud' ? 'Os convidados acessam pelo endereço da central.' : 'Os acessos funcionam neste Mac; compartilhamento pela internet ainda não foi publicado.'}</p>{users.map(user => <div className="list-row" key={user.id}><div><strong>{user.name}</strong><small>{user.email} · {user.role === 'owner' ? 'Proprietário' : user.disabled ? 'Acesso suspenso' : 'Financeiro empresarial'}</small></div>{user.role !== 'owner' && <button className="small-button" disabled={busy} onClick={() => void run(async () => { await api('/team-access', { method: 'POST', csrf: session.csrf, data: { id: user.id, disabled: !user.disabled } }); await refresh(); })}>{user.disabled ? 'Reativar' : 'Suspender acesso'}</button>}</div>)}<form className="invite-form" onSubmit={createInvite}><div className="form-grid"><label className="field"><span>Nome do convidado</span><input name="name" required maxLength={100} /></label><label className="field"><span>E-mail do convidado</span><input name="email" type="email" required maxLength={180} /></label></div><button className="secondary" disabled={busy}>Gerar convite de acesso empresarial</button></form>{invite && <div className="form-note"><p>Convite criado. Válido por 24 horas, para um único uso. Nenhum e-mail foi enviado. {session.storage === 'cloud' ? 'Compartilhe o endereço abaixo com o convidado.' : 'Abra este endereço neste Mac para aceitar o convite.'}</p><label className="field"><span>Endereço do convite</span><input value={invite} readOnly onFocus={e => e.target.select()} /></label></div>}</section>}
+  {error && <p className="form-error" role="alert">{error}</p>}{notice && <p className="form-note" role="status">{notice}</p>}</div>;
+}

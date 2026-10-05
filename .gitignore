@@ -10,6 +10,9 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-finance
+.catarse-finance-data/
+.env.finance
 *.local
 
 # Editor directories and files
@@ -22,3 +25,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.vercel/
+.env
+.env.*
+!.env.finance.example
+!.env.cloud.example
