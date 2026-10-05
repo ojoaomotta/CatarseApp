@@ -3,7 +3,7 @@ export interface User { id: string; name: string; email: string; role: 'owner' |
 export interface SessionInfo { needsSetup: boolean; requiresSetupKey?: boolean; storage?: 'local' | 'cloud'; user: User | null; csrf: string | null; gemini: { configured: boolean; model: string | null; dailyLimit: number } }
 export interface Snapshot { data: Data; revision: number }
 export interface RemoteWorkspace {
-  user: User; scope: Scope; initial: Data;
+  storage?: 'local' | 'cloud'; user: User; scope: Scope; initial: Data;
   save: (data: Data, action: string) => Promise<Snapshot>;
   load: () => Promise<Snapshot>;
   changeScope: (scope: Scope) => void;
