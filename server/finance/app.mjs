@@ -7,7 +7,7 @@ import { createAuth } from './auth.mjs';
 import { createCloudAuth } from './cloud-auth.mjs';
 import { askGemini } from './gemini.mjs';
 
-export async function createFinanceServer({ directory, staticDirectory, cloudStore, publicOrigin, setupKey, origins = ['http://127.0.0.1:1430'], geminiKey = '', geminiModel = '', geminiEnabled = false, dailyLimit = 20, fetchImpl = fetch }) {
+export async function createFinanceServer({ directory, staticDirectory, cloudStore, publicOrigin, additionalOrigins = [], setupKey, origins = ['http://127.0.0.1:1430'], geminiKey = '', geminiModel = '', geminiEnabled = false, dailyLimit = 20, fetchImpl = fetch }) {
   const store = cloudStore || createStore(directory);
   const auth = cloudStore ? await createCloudAuth(store, {setupKey}) : await createAuth(store);
   const attempts = new Map();
@@ -50,7 +50,7 @@ export async function createFinanceServer({ directory, staticDirectory, cloudSto
         res.writeHead(200, { 'Content-Type': ({ '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' })[extname(file)] }); res.end(bytes); return;
       }
       const origin = req.headers.origin;
-      const trusted = cloudStore ? [publicOrigin] : [...origins, `http://127.0.0.1:${port}`];
+      const trusted = cloudStore ? [publicOrigin, ...additionalOrigins] : [...origins, `http://127.0.0.1:${port}`];
       if (origin && !trusted.includes(origin)) throw new HttpError(403, 'Origem não autorizada.');
       const mutation = !['GET', 'HEAD'].includes(req.method);
       if (mutation && (!origin || !trusted.includes(origin) || req.headers['x-catarse-client'] !== 'finance-v2')) throw new HttpError(403, 'A operação precisa partir da central Catarse.');

@@ -17,7 +17,7 @@ async function fixture(t) {
   const query = (sql, args) => sql.includes('pg_advisory_xact_lock') ? Promise.resolve({rows:[]}) : pg.query(sql,args);
   const pool = {query, end:()=>pg.close(), connect:async()=>{const previous=queue;let release;queue=new Promise(resolve=>{release=resolve});await previous;return {query,release};}};
   const store = await createPostgresStore('',{pool});
-  const app = await createFinanceServer({cloudStore:store,publicOrigin:'https://catarse.example',setupKey:'test-activation-key-at-least-32-characters'});
+  const app = await createFinanceServer({cloudStore:store,publicOrigin:'https://catarse.example',additionalOrigins:['https://alternate.example'],setupKey:'test-activation-key-at-least-32-characters'});
   await new Promise(resolve=>app.server.listen(0,'127.0.0.1',resolve));
   const base=`http://127.0.0.1:${app.server.address().port}`;
   t.after(async()=>{await app.close();});
@@ -61,4 +61,13 @@ test('PostgreSQL persists, detects stale revisions and restores only authorized 
 test('cloud usage counters survive new adapter calls',async t=>{
  const a=await fixture(t);await a.store.throttle('test',1,60000);
  await assert.rejects(a.store.throttle('test',1,60000),e=>e.status===429);
+});
+
+test('explicit production alias accepts requests while unrelated origins stay blocked',async t=>{
+ const a=await fixture(t);
+ assert.equal((await a.request('/session',{origin:'https://alternate.example'})).status,200);
+ const result=await a.request('/setup',{method:'POST',origin:'https://alternate.example',data:{}});
+ assert.equal(result.status,403);
+ assert.equal(result.body.error,'Código de ativação inválido.');
+ assert.equal((await a.request('/session',{origin:'https://unknown.example'})).body.error,'Origem não autorizada.');
 });
