@@ -18,4 +18,6 @@ jobs:
       - run: npm run test:finance
       - run: npm run test:server
       - run: npm run test:cloud
+      - run: node --test tests/native.test.mjs
+      - run: npm run build:native
       - run: npm run build:web

@@ -1,12 +1,13 @@
 import {createHash,createPublicKey,verify} from 'node:crypto';
 import {readFile,readdir} from 'node:fs/promises';
-import {join} from 'node:path';
+import {join,resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-const dir=process.argv[2];if(!dir)throw new Error('Informe o diretório dos arquivos do release.');
+export async function verifyRelease(dir,config){
 const files=await readdir(dir);
 for(const extension of ['.dmg','.exe','.apk'])assert(files.some(f=>f.endsWith(extension)),`Falta ${extension}`);
 const manifest=JSON.parse(await readFile(join(dir,'latest.json'),'utf8'));
-const config=JSON.parse(await readFile('src-tauri/tauri.conf.json','utf8'));
+
 assert.equal(manifest.version.replace(/^v/,''),config.version);
 for(const platform of ['darwin-aarch64','darwin-x86_64','windows-x86_64']){
  const entry=manifest.platforms[platform];assert(entry,`Plataforma ausente: ${platform}`);
@@ -25,4 +26,10 @@ for(const platform of ['darwin-aarch64','darwin-x86_64','windows-x86_64']){
  const message=algorithm==='ED'?createHash('blake2b512').update(content).digest():content;
  assert(verify(null,message,key,packet.subarray(10)),`Assinatura inválida: ${file}`);
 }
-console.log('Instaladores e manifesto conferidos. Publicação permanece manual após revisão.');
+return manifest;
+}
+if(process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)){
+ const dir=process.argv[2];if(!dir)throw new Error('Informe o diretório dos arquivos do release.');
+ await verifyRelease(dir,JSON.parse(await readFile('src-tauri/tauri.conf.json','utf8')));
+ console.log('Instaladores, manifesto e assinaturas criptográficas conferidos.');
+}

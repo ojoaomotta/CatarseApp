@@ -21,7 +21,7 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run test:finance && npm run test:server && npm run test:cloud && npm run build:native
+      - run: npm run test:finance && npm run test:server && npm run test:cloud && node --test tests/native.test.mjs && npm run build:native
       - id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
