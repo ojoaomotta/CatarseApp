@@ -29,3 +29,13 @@ test('publicação verifica assinatura real e rejeita arquivo adulterado',async(
   await writeFile(join(dir,'Catarse.exe'),'modified');await assert.rejects(()=>verifyRelease(dir,config),/Assinatura inválida/);
  }finally{await rm(dir,{recursive:true,force:true});}
 });
+
+test('app web guarda somente a página offline e não intercepta API financeira',async()=>{
+ const {runInNewContext}=await import('node:vm');
+ const handlers={};const cached=[];let intercepted=false;
+ const fakeCache={add:async url=>cached.push(url)};
+ runInNewContext(await readFile('public/sw.js','utf8'),{URL,self:{location:{origin:'https://catarseadm.vercel.app'},addEventListener:(name,fn)=>handlers[name]=fn,skipWaiting:async()=>{},clients:{claim:async()=>{}}},caches:{open:async()=>fakeCache,match:async()=>({offline:true})},fetch:async()=>{throw new Error('offline');}});
+ let work;handlers.install({waitUntil:p=>{work=p;}});await work;assert.deepEqual(cached,['/offline.html']);
+ handlers.fetch({request:{mode:'cors',method:'GET',url:'https://catarseadm.vercel.app/api/data'},respondWith:()=>{intercepted=true;}});assert.equal(intercepted,false);
+ handlers.fetch({request:{mode:'navigate',method:'GET',url:'https://catarseadm.vercel.app/'},respondWith:p=>{work=p;}});assert.deepEqual(await work,{offline:true});
+});
