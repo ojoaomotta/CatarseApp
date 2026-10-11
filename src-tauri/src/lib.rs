@@ -1,30 +1,29 @@
-use tauri::Manager;
+use tauri::WebviewWindow;
+const WORKSPACE: &str = "https://catarseadm.vercel.app/";
 
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn is_desktop() -> bool { cfg!(desktop) }
+
+#[tauri::command]
+async fn open_workspace(window: WebviewWindow) -> Result<(), String> {
+    // Defense in depth: never expose native navigation to a remote page.
+    let origin = window.url().map_err(|e| e.to_string())?;
+    let local = origin.scheme() == "tauri" || origin.host_str() == Some("tauri.localhost")
+        || (cfg!(debug_assertions) && origin.host_str() == Some("127.0.0.1"));
+    if !local { return Err("Origem não autorizada".into()); }
+    let response = reqwest::Client::builder().timeout(std::time::Duration::from_secs(15))
+        .redirect(reqwest::redirect::Policy::none()).build().map_err(|e| e.to_string())?
+        .get(format!("{}api/health", WORKSPACE)).send().await.map_err(|_| "Sem conexão".to_string())?;
+    if !response.status().is_success() { return Err("Servidor indisponível".into()); }
+    window.navigate(WORKSPACE.parse().unwrap()).map_err(|e| e.to_string())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_process::init())
-        .setup(|app| {
-            if let Some(window) = app.get_webview_window("main") {
-                if let Some(monitor) = window.current_monitor().ok().flatten() {
-                    let size = monitor.size();
-                    let width = (size.width as f64 * 0.9) as u32;
-                    let height = (size.height as f64 * 0.9) as u32;
-                    let _ = window.set_size(tauri::PhysicalSize::new(width, height));
-                    let _ = window.center();
-                }
-            }
-            Ok(())
-        })
-        .invoke_handler(tauri::generate_handler![greet])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    let builder = tauri::Builder::default();
+    #[cfg(desktop)]
+    let builder = builder.plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init());
+    builder.invoke_handler(tauri::generate_handler![open_workspace, is_desktop])
+        .run(tauri::generate_context!()).expect("Não foi possível iniciar a Catarse");
 }

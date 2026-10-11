@@ -31,3 +31,9 @@ dist-finance
 .env.*
 !.env.finance.example
 !.env.cloud.example
+
+dist-native/
+*.jks
+*.keystore
+src-tauri/gen/android/
+src-tauri/gen/apple/

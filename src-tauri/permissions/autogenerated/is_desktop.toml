@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-is-desktop"
+description = "Enables the is_desktop command without any pre-configured scope."
+commands.allow = ["is_desktop"]
+
+[[permission]]
+identifier = "deny-is-desktop"
+description = "Denies the is_desktop command without any pre-configured scope."
+commands.deny = ["is_desktop"]

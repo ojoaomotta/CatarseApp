@@ -1,24 +1,30 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Catarse",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "identifier": "com.catarse.central",
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
+    "beforeDevCommand": "npm run dev:native",
+    "devUrl": "http://127.0.0.1:1435/native.html",
+    "beforeBuildCommand": "npm run build:native",
+    "frontendDist": "../dist-native"
   },
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "Catarse",
-        "width": 800,
-        "height": 600
+        "url": "native.html",
+        "width": 1280,
+        "height": 840,
+        "minWidth": 360,
+        "minHeight": 600,
+        "backgroundColor": "#182b25",
+        "center": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ipc: http://ipc.localhost; object-src 'none'; base-uri 'none'; frame-src 'none'"
     }
   },
   "bundle": {
@@ -30,15 +36,50 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true,
+    "category": "Finance",
+    "shortDescription": "Central de gest\u00e3o Catarse",
+    "publisher": "Catarse",
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "dmg": {
+        "background": "installer/dmg-background.png",
+        "windowSize": {
+          "width": 660,
+          "height": 440
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 260
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 260
+        }
+      }
+    },
+    "windows": {
+      "nsis": {
+        "languages": [
+          "PortugueseBR"
+        ],
+        "displayLanguageSelector": false,
+        "installMode": "currentUser",
+        "sidebarImage": "installer/sidebar.bmp",
+        "headerImage": "installer/header.bmp"
+      }
+    }
   },
   "plugins": {
     "updater": {
-      "active": true,
       "endpoints": [
         "https://github.com/ojoaomotta/CatarseApp/releases/latest/download/latest.json"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE1MUNBQzkwN0UyMUNFODYKUldTR3ppRitrS3djRmRzU2pKWlFoU1NkZ09HMGwzZVAwbHQ1WThPNERuTHVWT2E1bmdPeUFLYUEK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE1MUNBQzkwN0UyMUNFODYKUldTR3ppRitrS3djRmRzU2pKWlFoU1NkZ09HMGwzZVAwbHQ1WThPNERuTHVWT2E1bmdPeUFLYUEK",
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "tauri-app",
   "private": true,
-  "version": "0.9.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev:finance": "node scripts/start-finance.mjs",
@@ -15,7 +15,13 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "build:web": "npm run build:finance && node scripts/build-vercel.mjs",
-    "test:cloud": "node --experimental-strip-types --test tests/finance-cloud.test.mjs"
+    "test:cloud": "node --experimental-strip-types --test tests/finance-cloud.test.mjs",
+    "build:native": "tsc && vite build --config vite.native.config.ts",
+    "dev:native": "vite --config vite.native.config.ts --open /native.html",
+    "app:dev": "tauri dev",
+    "app:build": "tauri build",
+    "app:android": "tauri android build",
+    "app:ios": "tauri ios build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",
