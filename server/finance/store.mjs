@@ -23,11 +23,11 @@ export function validateScope(raw, scope) {
   return JSON.parse(JSON.stringify({
     version: 2,
     accounts: data.accounts.map(({ id, scope, name, opening, openingDate }) => ({ id, scope, name, opening, openingDate })),
-    entries: data.entries.map(({ id, scope, accountId, kind, description, category, amount, due, projectId, payments, createdAt, groupId }) => ({ id, scope, accountId, kind, description, category, amount, due, projectId, createdAt, groupId,
-      payments: payments.map(({ id, amount, date }) => ({ id, amount, date })) })),
+    entries: data.entries.map(({ id, scope, accountId, kind, description, category, amount, due, projectId, payments, createdAt, groupId, titheDefault, titheSourcePaymentId }) => ({ id, scope, accountId, kind, description, category, amount, due, projectId, createdAt, groupId, titheDefault, titheSourcePaymentId,
+      payments: payments.map(({ id, amount, date, tithe }) => ({ id, amount, date, tithe })) })),
     transfers: data.transfers.map(({ id, from, to, amount, date }) => ({ id, from, to, amount, date })),
     projects: data.projects.map(({ id, name, client, date, budget }) => ({ id, name, client, date, budget })),
-    goals: data.goals.map(({ id, scope, name, target, saved }) => ({ id, scope, name, target, saved })), audit: [],
+    goals: data.goals.map(({ id, scope, name, target, saved, monthly, deadline }) => ({ id, scope, name, target, saved, monthly, deadline })), audit: [],
   }));
 }
 export function createStore(directory) {

@@ -2,14 +2,14 @@ export type Scope = 'business' | 'personal';
 export type Kind = 'income' | 'expense';
 export interface Account { id: string; scope: Scope; name: string; opening: number; openingDate: string }
 export interface Project { id: string; name: string; client: string; date: string; budget: number }
-export interface Payment { id: string; amount: number; date: string }
+export interface Payment { id: string; amount: number; date: string; tithe?: boolean }
 export interface Entry {
   id: string; scope: Scope; accountId: string; kind: Kind; description: string;
   category: string; amount: number; due: string; projectId: string; payments: Payment[];
-  createdAt: string; groupId?: string;
+  createdAt: string; groupId?: string; titheSourcePaymentId?: string; titheDefault?: boolean;
 }
 export interface Transfer { id: string; from: string; to: string; amount: number; date: string }
-export interface Goal { id: string; scope: Scope; name: string; target: number; saved: number }
+export interface Goal { id: string; scope: Scope; name: string; target: number; saved: number; monthly?: number; deadline?: string }
 export interface Audit { id: string; at: string; action: string }
 export interface Data { version: 2; accounts: Account[]; entries: Entry[]; transfers: Transfer[]; projects: Project[]; goals: Goal[]; audit: Audit[] }
 export const emptyData = (): Data => ({ version: 2, accounts: [], entries: [], transfers: [], projects: [], goals: [], audit: [] });
@@ -70,13 +70,13 @@ export function splitEntry(base: Omit<Entry, 'id' | 'payments' | 'createdAt'>, c
     description: count > 1 ? `${base.description} · ${index + 1}/${count}` : base.description,
     amount: floor + (index < rest ? 1 : 0), due: addMonths(base.due, index), payments: [], createdAt: new Date().toISOString() }));
 }
-export function registerPayment(data: Data, id: string, amount: number, date: string): Data {
+export function registerPayment(data: Data, id: string, amount: number, date: string, tithe = false): Data {
   const e = data.entries.find(row => row.id === id);
   if (!e) throw new Error('Lançamento não encontrado.');
   const account = data.accounts.find(a => a.id === e.accountId)!;
   if (!validDate(date) || date > today() || date < account.openingDate) throw new Error('O pagamento precisa estar entre o saldo inicial da conta e hoje.');
   if (!Number.isSafeInteger(amount) || amount <= 0 || amount > remaining(e)) throw new Error('O pagamento deve ser positivo e não pode superar o saldo do lançamento.');
-  return { ...data, entries: data.entries.map(row => row.id === id ? { ...row, payments: [...row.payments, { id: uid(), amount, date }] } : row) };
+  return { ...data, entries: data.entries.map(row => row.id === id ? { ...row, payments: [...row.payments, { id: uid(), amount, date, ...(e.kind === 'income' ? {tithe} : {}) }] } : row) };
 }
 
 // All persisted/imported data is validated before it can enter the ledger.
@@ -102,12 +102,51 @@ export function validateData(raw: unknown): Data {
     if (e.projectId && (e.scope !== 'business' || !data.projects.some(p => p.id === e.projectId))) return fail();
     for (const value of e.payments) { const p = obj(value); id(p.id); if (!number(p.amount, true) || !date(p.date) || p.date < a.openingDate || p.date > today()) return fail(); }
     if (paid(value) > value.amount) return fail();
+    if (e.titheDefault !== undefined && (typeof e.titheDefault !== 'boolean' || e.kind !== 'income')) return fail();
+    if (value.payments.some(p => p.tithe !== undefined && (typeof p.tithe !== 'boolean' || value.kind !== 'income'))) return fail();
+  }
+  const linked = new Set<string>();
+  for (const e of data.entries) if (e.titheSourcePaymentId !== undefined) {
+    if (!nonempty(e.titheSourcePaymentId) || linked.has(e.titheSourcePaymentId)) return fail();
+    linked.add(e.titheSourcePaymentId);
+    const source = data.entries.find(row => row.kind === 'income' && row.payments.some(p => p.id === e.titheSourcePaymentId && p.tithe));
+    const receipt = source?.payments.find(p => p.id === e.titheSourcePaymentId);
+    if (!source || !receipt || e.kind !== 'expense' || e.accountId !== source.accountId || e.scope !== source.scope || e.amount !== Math.round(receipt.amount / 10) || e.payments.some(p => p.date < receipt.date)) return fail();
   }
   for (const value of data.transfers) {
     const t = obj(value); id(t.id); const from = data.accounts.find(a => a.id === t.from); const to = data.accounts.find(a => a.id === t.to);
     if (!from || !to || from.id === to.id || from.scope !== to.scope || !number(t.amount, true) || !date(t.date) || t.date < from.openingDate || t.date < to.openingDate || t.date > today()) return fail();
   }
-  for (const value of data.goals) { const g = obj(value); id(g.id); if (!scope(g.scope) || !nonempty(g.name) || !number(g.target, true) || !number(g.saved) || (g.saved as number) < 0) return fail(); }
+  for (const value of data.goals) { const g = obj(value); id(g.id); if (!scope(g.scope) || !nonempty(g.name) || !number(g.target, true) || !number(g.saved) || (g.saved as number) < 0 || (g.monthly !== undefined && (!number(g.monthly) || (g.monthly as number) < 0)) || (g.deadline !== undefined && !date(g.deadline))) return fail(); }
   for (const value of data.audit) { const a = obj(value); id(a.id); if (!nonempty(a.action) || !text(a.at) || !Number.isFinite(Date.parse(a.at as string))) return fail(); }
   return data;
+}
+
+export function titheItems(data: Data, scope: Scope, date = today()) {
+  return data.entries.filter(e => e.scope === scope && e.kind === 'income').flatMap(e => e.payments.filter(p => p.tithe && p.date <= date).map(p => {
+    const payout = data.entries.find(row => row.titheSourcePaymentId === p.id);
+    const returned = payout?.payments.filter(payment => payment.date <= date).reduce((sum, payment) => sum + payment.amount, 0) || 0;
+    const amount = Math.round(p.amount / 10);
+    return {paymentId:p.id, accountId:e.accountId, description:e.description, date:p.date, amount, returned, reserved:amount-returned};
+  }));
+}
+export function titheReserved(data: Data, scope: Scope, accountId?: string) {
+  return titheItems(data, scope).filter(p => !accountId || p.accountId === accountId).reduce((s,p) => s+p.reserved,0);
+}
+export function settleTithe(data: Data, scope: Scope, accountId: string, date: string): Data {
+  const items = titheItems(data, scope).filter(p => p.accountId === accountId && p.reserved > 0);
+  if (!items.length) throw new Error('Não há dízimo pendente nesta conta.');
+  if (!validDate(date) || date > today() || items.some(p => p.date > date)) throw new Error('A devolução deve ocorrer entre o último recebimento e hoje.');
+  let next = data;
+  for (const item of items) {
+    let entry = next.entries.find(e => e.titheSourcePaymentId === item.paymentId);
+    if (!entry) { entry = {id:uid(),scope,accountId,kind:'expense',description:'Dízimo · '+item.description,category:'Dízimo',amount:item.amount,due:date,projectId:'',payments:[],createdAt:new Date().toISOString(),titheSourcePaymentId:item.paymentId}; next={...next,entries:[...next.entries,entry]}; }
+    next=registerPayment(next,entry.id,item.reserved,date);
+  }
+  return validateData(next);
+}
+export function reversePayment(data: Data, entryId: string, paymentId: string): Data {
+  const linked=data.entries.find(e => e.titheSourcePaymentId === paymentId);
+  if (linked && paid(linked)>0) throw new Error('Estorne primeiro a devolução do dízimo vinculada a este recebimento.');
+  return validateData({...data,entries:data.entries.filter(e => e.id !== linked?.id).map(e => e.id === entryId ? {...e,payments:e.payments.filter(p=>p.id!==paymentId)} : e)});
 }

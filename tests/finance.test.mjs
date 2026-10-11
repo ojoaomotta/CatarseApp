@@ -92,3 +92,36 @@ test('falta de espaço gera falha explícita; CSV neutraliza fórmulas e separa 
   assert.ok(csvExport(data, 'business').includes("'=HYPERLINK"));
   assert.equal(csvExport(data, 'personal').split('\r\n').length, 1);
 });
+
+test('dízimo reserva sem debitar; devolução e estorno preservam o saldo', async () => {
+ const {titheReserved,settleTithe,reversePayment}=await import('../src/v2/domain.ts');
+ let d=registerPayment(fixture(),'e',10005,today(),true);
+ d=registerPayment(d,'e',9995,today(),false);
+ assert.equal(balance(d,'a'),120000); assert.equal(titheReserved(d,'business'),1001); assert.equal(titheReserved(d,'personal'),0);
+ const receipt=d.entries[0].payments[0];
+ d=settleTithe(d,'business','a',today());
+ assert.equal(balance(d,'a'),118999); assert.equal(titheReserved(d,'business'),0);
+ assert.throws(()=>settleTithe(d,'business','a',today()));
+ assert.throws(()=>reversePayment(d,'e',receipt.id));
+ const payout=d.entries.find(e=>e.titheSourcePaymentId===receipt.id);
+ d=reversePayment(d,payout.id,payout.payments[0].id);
+ assert.equal(balance(d,'a'),120000);assert.equal(titheReserved(d,'business'),1001);
+ d=reversePayment(d,'e',receipt.id);assert.equal(titheReserved(d,'business'),0);assert.equal(balance(d,'a'),109995);
+});
+
+test('contexto e propostas da IA respeitam espaço e mantêm progresso das metas', async()=>{
+ const {buildContext}=await import('../server/finance/gemini.mjs');
+ const {applyProposal}=await import('../src/v2/assistant.ts');
+ const {validateScope}=await import('../server/finance/store.mjs');
+ let d=registerPayment(fixture(),'e',10000,today(),true);
+ const action={type:'create_goal',name:'Reserva',goalId:'',target:500000,monthly:20000,deadline:'2027-12-31'};
+ d=applyProposal(d,'business',action);
+ const context=buildContext(d,'business',['c','tithe',d.goals[0].id]);
+ assert.equal(context.accounts.some(a=>a.id==='c'),false);assert.equal(context.accounts[0].available,109000);
+ assert.deepEqual(context.mentions,['tithe',d.goals[0].id]);
+ assert.throws(()=>applyProposal(d,'personal',{...action,type:'update_goal',goalId:d.goals[0].id}));
+ assert.throws(()=>applyProposal(d,'business',{...action,monthly:-1}));
+ assert.throws(()=>applyProposal(d,'business',{...action,type:'transfer'}));
+ const saved=validateScope({...d,accounts:d.accounts.filter(a=>a.scope==='business')},'business');
+ assert.equal(saved.entries[0].payments[0].tithe,true); assert.equal(saved.goals[0].monthly,20000);
+});

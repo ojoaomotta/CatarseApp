@@ -103,7 +103,7 @@ export async function createFinanceServer({ directory, staticDirectory, cloudSto
       if (path === '/api/assistant' && req.method === 'POST') {
         const key = workspaceKey(session.user, scope);
         if (!geminiEnabled || !geminiKey || !geminiModel) throw new HttpError(503, 'O Gemini ainda não foi configurado no servidor.');
-        const input = await body(req, 6000);
+        const input = await body(req, 80000);
         if (input?.consent !== true) throw new HttpError(400, 'Confirme o envio dos dados deste espaço ao Google.');
         if (typeof input?.question !== 'string' || !input.question.trim() || input.question.length > 1200) throw new HttpError(400, 'Escreva uma pergunta de até 1.200 caracteres.');
         await throttle(`ai:${session.user.id}`, 3, 60_000);
@@ -120,7 +120,7 @@ export async function createFinanceServer({ directory, staticDirectory, cloudSto
           return id;
         });
         try {
-          const answer = await askGemini({ data: (await store.read(session.user, scope)).data, scope, question: input.question, key: geminiKey, model: geminiModel, fetchImpl });
+          const answer = await askGemini({ data: (await store.read(session.user, scope)).data, scope, question: input.question, mentions: input.mentions, history: input.history, key: geminiKey, model: geminiModel, fetchImpl });
           await store.db.prepare('UPDATE ai_usage SET outcome = ? WHERE id = ?').run('completed', id);
           json(res, 200, answer);
         } catch (error) { await store.db.prepare('UPDATE ai_usage SET outcome = ? WHERE id = ?').run('failed', id); throw error; }
