@@ -21,7 +21,8 @@
     "app:dev": "tauri dev",
     "app:build": "tauri build",
     "app:android": "tauri android build",
-    "app:ios": "tauri ios build"
+    "app:ios": "tauri ios build",
+    "app:ios:prepare": "node scripts/prepare-ios.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",

@@ -13,7 +13,7 @@ As permissões nativas pertencem somente à origem local da tela de abertura. A 
 - Mac: DMG universal (Intel e Apple Silicon), fundo próprio e instalação em Aplicativos. Sem Developer ID/notarização por enquanto.
 - Windows: NSIS EXE x64 em português, por usuário, sem exigir administrador. Sem Authenticode por enquanto.
 - Android: APK ARM64, assinado por chave persistente. O Android confirma a instalação/atualização do APK. Não existe atualização silenciosa de APK neste projeto.
-- iPhone: app web via Safari → Compartilhar → Adicionar à Tela de Início. O projeto nativo é compilado separadamente para simulador. TestFlight/App Store exigem Apple Developer, certificados e provisioning profile. Artefato de simulador não instala em aparelho.
+- iPhone: app web via Safari → Compartilhar → Adicionar à Tela de Início. O projeto nativo é compilado separadamente para simulador. Instalação pessoal via Xcode permite uma conta Apple gratuita, com renovação em 7 dias; veja IPHONE-PESSOAL.md. TestFlight/App Store exigem Apple Developer, certificados e provisioning profile. Artefato de simulador não instala em aparelho.
 
 O app web instalado não armazena os registros financeiros em cache. O service worker guarda apenas uma página pública para indicar falta de conexão. Melhorias do painel online são recebidas ao recarregar; novos binários desktop usam o updater do GitHub.
 
