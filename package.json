@@ -17,7 +17,7 @@
     "build:web": "npm run build:finance && node scripts/build-vercel.mjs",
     "test:cloud": "node --experimental-strip-types --test tests/finance-cloud.test.mjs",
     "build:native": "tsc && vite build --config vite.native.config.ts",
-    "dev:native": "vite --config vite.native.config.ts --open /native.html",
+    "dev:native": "vite --config vite.native.config.ts",
     "app:dev": "tauri dev",
     "app:build": "tauri build",
     "app:android": "tauri android build",
