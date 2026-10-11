@@ -22,7 +22,7 @@ O app web instalado não armazena os registros financeiros em cache. O service w
 1. Atualizar a mesma versão em package.json, package-lock.json, Cargo.toml/Cargo.lock e tauri.conf.json.
 2. Executar `npm run build:native`, `cargo check --manifest-path src-tauri/Cargo.toml` e os testes financeiros.
 3. Executar o workflow `Catarse installers` (ou enviar tag `app-vX.Y.Z`).
-4. O workflow cria/reutiliza um rascunho; compila Mac/Windows/Android e anexa artefatos, assinaturas e latest.json.
+4. O workflow cria/reutiliza um rascunho; compila Mac/Windows/Android e anexa artefatos e assinaturas. Depois que todas as compilações terminam, a etapa final reconstrói latest.json a partir das assinaturas dos arquivos finais para evitar metadados antigos em recompilações.
 5. Baixar os artefatos e executar `node scripts/verify-release.mjs DIRETORIO`. O verificador confere plataformas, versão, URL, arquivos e assinaturas criptográficas contra a chave pública embarcada.
 6. Conferir o resultado e publicar o rascunho. Somente releases publicados aparecem na consulta de atualização e na página `/install.html`.
 

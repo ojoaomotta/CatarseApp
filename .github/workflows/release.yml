@@ -7,7 +7,7 @@ on:
       platform:
         description: Pacotes a gerar
         type: choice
-        options: [all, android]
+        options: [all, android, finalize]
         default: all
 permissions:
   contents: write
@@ -45,7 +45,7 @@ jobs:
           echo "id=$(gh release view "$TAG" --json databaseId --jq .databaseId)" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
   desktop:
-    if: ${{ github.event.inputs.platform != 'android' }}
+    if: ${{ github.event.inputs.platform != 'android' && github.event.inputs.platform != 'finalize' }}
     needs: prepare
     strategy:
       fail-fast: false
@@ -80,6 +80,7 @@ jobs:
           args: ${{ matrix.args }}
           includeUpdaterJson: true
   android:
+    if: ${{ github.event.inputs.platform != 'finalize' }}
     needs: prepare
     runs-on: ubuntu-latest
     env:
@@ -123,7 +124,7 @@ jobs:
           cp "$APK" Catarse-Android-arm64.apk
           gh release upload "$RELEASE_TAG" Catarse-Android-arm64.apk --clobber
   verify:
-    if: ${{ always() && needs.prepare.result == 'success' && needs.android.result == 'success' && (needs.desktop.result == 'success' || needs.desktop.result == 'skipped') }}
+    if: ${{ always() && needs.prepare.result == 'success' && (needs.android.result == 'success' || (github.event.inputs.platform == 'finalize' && needs.android.result == 'skipped')) && (needs.desktop.result == 'success' || needs.desktop.result == 'skipped') }}
     needs: [prepare, desktop, android]
     runs-on: ubuntu-latest
     steps:
@@ -136,7 +137,9 @@ jobs:
           RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
         run: |
           gh release download "$RELEASE_TAG" --dir release-check
+          node scripts/write-release-manifest.mjs release-check
           node scripts/verify-release.mjs release-check
+          gh release upload "$RELEASE_TAG" release-check/latest.json --clobber
           cd release-check
           sha256sum *.dmg *.exe *.apk > SHA256SUMS.txt
           gh release upload "$RELEASE_TAG" SHA256SUMS.txt --clobber

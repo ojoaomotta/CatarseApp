@@ -4,6 +4,7 @@ import {readFile,mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {generateKeyPairSync,sign,createHash} from 'node:crypto';
+import {writeReleaseManifest} from '../scripts/write-release-manifest.mjs';
 import {verifyRelease} from '../scripts/verify-release.mjs';
 test('pacote nativo abre somente o launcher atual e não concede capacidades remotas',async()=>{
  const config=JSON.parse(await readFile('src-tauri/tauri.conf.json','utf8'));
@@ -23,10 +24,14 @@ test('publicação verifica assinatura real e rejeita arquivo adulterado',async(
   const signature=sign(null,createHash('blake2b512').update(content).digest(),privateKey);
   const packet=Buffer.concat([Buffer.from('ED'),keyId,signature]);
   const signatureText=Buffer.from('untrusted comment: test\n'+packet.toString('base64')+'\n').toString('base64');
-  for(const file of ['Catarse.dmg','Catarse.exe','Catarse.apk','Catarse.app.tar.gz'])await writeFile(join(dir,file),content);
-  const manifest={version:'1.0.0',platforms:Object.fromEntries(['darwin-aarch64','darwin-x86_64','windows-x86_64'].map(platform=>[platform,{signature:signatureText,url:`https://github.com/ojoaomotta/CatarseApp/releases/download/app-v1.0.0/${platform.startsWith('darwin')?'Catarse.app.tar.gz':'Catarse.exe'}`}]))};
+  for(const file of ['Catarse.dmg','Catarse_1.0.0_x64-setup.exe','Catarse.apk','Catarse_universal.app.tar.gz'])await writeFile(join(dir,file),content);
+  const manifest={version:'1.0.0',platforms:Object.fromEntries(['darwin-aarch64','darwin-x86_64','windows-x86_64'].map(platform=>[platform,{signature:signatureText,url:`https://github.com/ojoaomotta/CatarseApp/releases/download/app-v1.0.0/${platform.startsWith('darwin')?'Catarse_universal.app.tar.gz':'Catarse_1.0.0_x64-setup.exe'}`}]))};
   await writeFile(join(dir,'latest.json'),JSON.stringify(manifest));await verifyRelease(dir,config);
-  await writeFile(join(dir,'Catarse.exe'),'modified');await assert.rejects(()=>verifyRelease(dir,config),/Assinatura inválida/);
+  for(const file of ['Catarse_1.0.0_x64-setup.exe','Catarse_universal.app.tar.gz'])await writeFile(join(dir,file+'.sig'),signatureText);
+  manifest.platforms['darwin-aarch64'].signature='stale';
+  await writeFile(join(dir,'latest.json'),JSON.stringify(manifest));
+  await writeReleaseManifest(dir,'1.0.0');await verifyRelease(dir,config);
+  await writeFile(join(dir,'Catarse_1.0.0_x64-setup.exe'),'modified');await assert.rejects(()=>verifyRelease(dir,config),/Assinatura inválida/);
  }finally{await rm(dir,{recursive:true,force:true});}
 });
 
