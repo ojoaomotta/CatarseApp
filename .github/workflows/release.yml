@@ -3,6 +3,12 @@ on:
   push:
     tags: ['app-v*']
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Pacotes a gerar
+        type: choice
+        options: [all, android]
+        default: all
 permissions:
   contents: write
 concurrency:
@@ -35,6 +41,7 @@ jobs:
           echo "id=$(gh release view "$TAG" --json databaseId --jq .databaseId)" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
   desktop:
+    if: ${{ github.event.inputs.platform != 'android' }}
     needs: prepare
     strategy:
       fail-fast: false
@@ -97,6 +104,7 @@ jobs:
           workspaces: src-tauri
       - run: npm ci
       - run: npm run tauri -- android init --ci
+      - run: npm run tauri -- icon src-tauri/icons/icon.png
       - run: node scripts/prepare-android.mjs
       - run: npm run tauri -- android build --apk --target aarch64
       - name: Upload signed APK
@@ -106,9 +114,12 @@ jobs:
         run: |
           APK=$(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk' ! -name '*unsigned*' | head -1)
           test -n "$APK"
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
           cp "$APK" Catarse-Android-arm64.apk
           gh release upload "$RELEASE_TAG" Catarse-Android-arm64.apk --clobber
   verify:
+    if: ${{ always() && needs.prepare.result == 'success' && needs.android.result == 'success' && (needs.desktop.result == 'success' || needs.desktop.result == 'skipped') }}
     needs: [prepare, desktop, android]
     runs-on: ubuntu-latest
     steps:
